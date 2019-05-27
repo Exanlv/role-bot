@@ -1,0 +1,17 @@
+{
+  "name": "role-bot",
+  "version": "1.0.0",
+  "description": "Makes roles self-assignable",
+  "main": "index.ts",
+  "scripts": {
+    "start": "ts-node ./src/index.ts"
+  },
+  "author": "Exan",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^11.4.2",
+    "emoji-regex": "^8.0.0",
+    "ts-node": "^8.1.0",
+    "tsc": "^1.20150623.0"
+  }
+}
