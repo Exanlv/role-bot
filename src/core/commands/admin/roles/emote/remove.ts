@@ -61,6 +61,6 @@ export class RemoveEmoteCommand extends AdminCommand implements BaseCommandInter
 		});
 
 
-		this.sendMessage(`Succesfully removed reacts \`\`${toRemove.join(', ')}\`\` from \`\`${guildRole.name}\`\` in category \`\`${category}\`\``);
+		this.sendMessage(`Succesfully removed reacts \`\`${toRemove.join(', ')}\`\` from \`\`${guildRole.name}\`\` in category \`\`${firstLetterUppercase(category)}\`\``);
     }
 }

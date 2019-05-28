@@ -1,9 +1,9 @@
 import { Client, TextChannel } from 'discord.js';
 import { GlobalConfig } from './global-config';
-import { handleMessage } from './core/base-command';
 import { ServerConfig } from './core/server-config';
 import { unlink, existsSync } from 'fs';
 import { ShortReact } from './shared/classes/short-react';
+import { handleMessage } from './core/handle-message';
 
 const client: Client = new Client();
 

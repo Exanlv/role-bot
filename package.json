@@ -11,8 +11,10 @@
   "dependencies": {
     "discord.js": "^11.4.2",
     "fs": "0.0.1-security",
+    "node-fetch": "^2.6.0",
     "ts-node": "^8.1.0",
     "tsc": "^1.20150623.0",
-    "typescript": "^3.4.5"
+    "typescript": "^3.4.5",
+    "url-exists": "^1.0.3"
   }
 }

@@ -3,8 +3,8 @@ import { BaseCommandInterface } from "../../../../base-command";
 import { firstLetterUppercase } from "../../../../functions";
 
 export class AddCategoryCommand extends AdminCommand implements BaseCommandInterface {
-    public runCommand() {
-		const categoryName = this.args.join(' ');
+    public async runCommand() {
+		const categoryName = this.args.join(' ') || await this.getUserInput('`> enter a name for the category you want to create`');
 
 		if (!categoryName) {
 			this.sendMessage('Could not add category; no category name was given');

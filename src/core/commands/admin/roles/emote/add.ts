@@ -1,36 +1,30 @@
 import { BaseCommandInterface } from "../../../../base-command";
-import { TextChannel, Emoji, MessageReaction, User } from "discord.js";
+import { TextChannel, Message, Emoji } from "discord.js";
 import { EmoteCommand } from "./emote";
 import { firstLetterUppercase } from "../../../../functions";
 import { GlobalConfig } from "../../../../../global-config";
+
+import * as fetch from 'node-fetch';
 
 export class AddEmoteCommand extends EmoteCommand implements BaseCommandInterface {
     public async runCommand() {
 		this.loadInput();
 		
-		const roleName = this.input.ROLE || this.input.R;
-		const categoryName = this.input.CATEGORY || this.input.C;
-
-		let emote = this.input.EMOTE || this.input.E;
-
-		const customEmoteName = this.input.EMOTENAME || this.input.EN;
-
-		const messageLink = this.args.find(a => a.startsWith('HTTPS://DISCORDAPP.COM/CHANNELS/')).replace('HTTPS://DISCORDAPP.COM/CHANNELS/', '').split('/') || null;
+		const roleName = this.input.ROLE || this.input.R || await this.getUserInput('`> enter name of self-assignable role`');
 
 		if (!roleName) {
 			this.sendMessage('Could not add reaction role assignment; no role was given');
 			return;
 		}
 
-		if (!messageLink) {
-			this.sendMessage('Could not add reaction role assignment; no message link was given');
+		const role = await this.message.guild.roles.find(r => r.name.toUpperCase() === roleName);
+
+		if (!role) {
+			this.sendMessage(`Could not add reaction role assignment; role \`\`${firstLetterUppercase(roleName)}\`\` does not exist`);
 			return;
 		}
 
-		if (!emote) {
-			this.sendMessage('Could not add reaction role assignment; no emote was given');
-			return;
-		}
+		const categoryName = this.input.CATEGORY || this.input.C || await this.getUserInput('`> enter name of category the role is in`');
 
 		if (!categoryName) {
 			this.sendMessage('Could not add reaction role assignment; no category was given');
@@ -42,19 +36,33 @@ export class AddEmoteCommand extends EmoteCommand implements BaseCommandInterfac
 			return;
 		}
 
-		if (messageLink.length !== 3) {
+		if (!this.serverConfig.selfAssign.roleIsInCategory(categoryName, role.id)) {
+			this.sendMessage(`Could not add reaction role assignment; role \`\`${role.name}\`\` is not in category \`\`${firstLetterUppercase(categoryName)}\`\``);
+			return;
+		}
+
+		let messageLink = this.args.find(a => a.startsWith('HTTPS://DISCORDAPP.COM/CHANNELS/'));
+		if(!messageLink) messageLink = await this.getUserInput('`> enter message link`') || '';
+		const messageData = messageLink.replace('HTTPS://DISCORDAPP.COM/CHANNELS/', '').split('/');
+
+		if (!messageData) {
+			this.sendMessage('Could not add reaction role assignment; no message link was given');
+			return;
+		}
+
+		if (messageData.length !== 3) {
 			this.sendMessage('Could not add reaction role assignment; invalid message url');
 			return;
 		}
 
-		const guildId = messageLink[0];
+		const guildId = messageData[0];
 
 		if (guildId !== this.message.guild.id) {
 			this.sendMessage('Could not add reaction role assignment; message is not on this guild');
 			return;
 		}
 
-		const channelId = messageLink[1];
+		const channelId = messageData[1];
 
 		const channel = this.message.guild.channels.find(c => c.id === channelId) as TextChannel;
 
@@ -63,56 +71,62 @@ export class AddEmoteCommand extends EmoteCommand implements BaseCommandInterfac
 			return;
 		}
 
-		const messageId = messageLink[2];
+		const messageId = messageData[2];
 
-		const message = await channel.fetchMessage(messageId);
+		const reactMessage = await channel.fetchMessage(messageId);
 
-		if (!message) {
+		if (!reactMessage) {
 			this.sendMessage('Could not add reaction role assignment; invalid message');
 			return;
 		}
 
-		if (message.reactions.size > 19) {
+		if (reactMessage.reactions.size > 19) {
 			this.sendMessage('Could not add reaction role assignment; too many reacts on this message');
 			return;
 		}
 
-		const role = await this.message.guild.roles.find(r => r.name.toUpperCase() === roleName);
+		this.message.channel.send('Please add the react for the role to this message').then(message => {
+			message = message as Message;
+			message.awaitReactions((reaction, user) => user.id === this.message.author.id, {max: 1, time: 60000}).then(async collection => {
+				const reactedEmote = collection.first().emoji;
+				let emoteToReact = reactedEmote;
 
-		if (!role) {
-			this.sendMessage(`Could not add reaction role assignment; role \`\`${firstLetterUppercase(roleName)}\`\` does not exist`);
-			return;
-		}
-
-		if (!this.serverConfig.selfAssign.roleIsInCategory(categoryName ,role.id)) {
-			this.sendMessage(`Could not add reaction role assignment; role \`\`${role.name}\`\` is not in category \`\`${firstLetterUppercase(categoryName)}\`\``);
-			return;
-		}
-
-		const react = await this.emoteValidate(emote, customEmoteName);
-		const reactIdentifier = react instanceof Emoji ? react.identifier.toUpperCase() : react as string;
-
-		if (!react) {
-			this.sendMessage(`Could not add reaction role assignment; emote \`\`${firstLetterUppercase(emote)}\`\` is invalid`);
-			return;
-		}
-
-		if (this.serverConfig.selfAssign.emoteExists(messageId, reactIdentifier)) {
-			this.sendMessage('Could not add reaction role assignment; there already is a role configured for this emote on the specified message');
-			return;
-		}
-
-		if (react) {
-			message.react(react).then(e => {
-				this.serverConfig.selfAssign.addEmote(categoryName, role.id, messageId, channelId, reactIdentifier);
-				this.serverConfig.saveConfig();
-				this.sendMessage('Reaction role added');
-
-				const botGuild = this.client.guilds.find(g => g.id === GlobalConfig.devServer);
-				if (botGuild.emojis.find(e => e.id === react['id'])) {
-					botGuild.deleteEmoji(react);
+				if (reactedEmote.id && !this.client.emojis.find(e => e.id === reactedEmote.id)) {
+					emoteToReact = await this.uploadEmote(emoteToReact as Emoji) || null;
 				}
+
+				if (!emoteToReact) {
+					this.sendMessage('Something went wrong trying to use this emote, try again later');
+					return;
+				}
+
+				reactMessage.react(emoteToReact).then(e => {
+					this.serverConfig.selfAssign.addEmote(categoryName, role.id, messageId, channelId, e.emoji.id ? e.emoji.identifier.toUpperCase() : e.emoji.name);
+					this.serverConfig.saveConfig();
+					this.sendMessage('Reaction role added');
+					this.deleteEmote(emoteToReact as Emoji);
+				}).catch(e => {
+					this.handleError(e, 'AddReact');
+					this.deleteEmote(emoteToReact as Emoji);
+				});
 			});
-		}
+		});
+	}
+
+	public async uploadEmote(emoji: Emoji): Promise<Emoji|void> {
+		const botGuild = this.client.guilds.find(g => g.id === GlobalConfig.devServer);
+
+		let gifExists = (await fetch(`https://cdn.discordapp.com/emojis/${emoji.id}.gif`, {method: 'HEAD'})).status === 200;
+		const url = `https://cdn.discordapp.com/emojis/${emoji.id}.${gifExists ? 'gif' : 'png'}`; 
+		const emote = await botGuild.createEmoji(url, emoji.name).catch(e => {
+			this.handleError(e, 'UploadEmote');
+		});
+
+		return emote;
+	}
+
+	public async deleteEmote(emoji: Emoji): Promise<void> {
+		const botGuild = this.client.guilds.find(g => g.id === GlobalConfig.devServer);
+		await botGuild.deleteEmoji(emoji);
 	}
 }

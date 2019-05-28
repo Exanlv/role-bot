@@ -1,7 +1,6 @@
 import { AdminCommand } from "../../_admin";
 import { GlobalConfig } from "../../../../../global-config";
 import { Emoji } from "discord.js";
-const emojiRegex = require('emoji-regex');
 
 export class EmoteCommand extends AdminCommand {
 	private async isDiscordEmoji(input): Promise<boolean|string> {
