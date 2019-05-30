@@ -1,16 +1,16 @@
 import { BaseCommandInterface } from "../../../../base-command";
 import { TextChannel, Message, Emoji } from "discord.js";
-import { EmoteCommand } from "./emote";
 import { firstLetterUppercase } from "../../../../functions";
 import { GlobalConfig } from "../../../../../global-config";
 
 import * as fetch from 'node-fetch';
+import { AdminCommand } from "../../_admin";
 
-export class AddEmoteCommand extends EmoteCommand implements BaseCommandInterface {
+export class AddEmoteCommand extends AdminCommand implements BaseCommandInterface {
     public async runCommand() {
 		this.loadInput();
 		
-		const roleName = this.input.ROLE || this.input.R || await this.getUserInput('`> enter name of self-assignable role`');
+		const roleName = this.input.ROLE || this.input.R || await this.getUserInput('`> enter role name`');
 
 		if (!roleName) {
 			this.sendMessage('Could not add reaction role assignment; no role was given');
@@ -24,7 +24,7 @@ export class AddEmoteCommand extends EmoteCommand implements BaseCommandInterfac
 			return;
 		}
 
-		const categoryName = this.input.CATEGORY || this.input.C || await this.getUserInput('`> enter name of category the role is in`');
+		const categoryName = this.input.CATEGORY || this.input.C || await this.getUserInput('`> enter category name`');
 
 		if (!categoryName) {
 			this.sendMessage('Could not add reaction role assignment; no category was given');

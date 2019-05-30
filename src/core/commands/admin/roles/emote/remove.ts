@@ -7,27 +7,23 @@ export class RemoveEmoteCommand extends AdminCommand implements BaseCommandInter
     public runCommand() {
 		this.loadInput();
 		
-		const category = this.input.CATEGORY || this.input.C;
-		const role = this.input.ROLE || this.input.R;
-		const toRemove = (this.input.REMOVE || this.input.RM).split(' ') as Array<number>;
+		const category = this.input.CATEGORY || this.input.C || this.getUserInput('`> enter category name`');
 
 		if (!category) {
 			this.sendMessage('Could not remove reaction role assignment; no category was given');
 			return;
 		}
 
-		if (!role) {
-			this.sendMessage('Could not remove reaction role assignment; no role was given');
-			return;
-		}
-
-		if (!toRemove.length) {
-			this.sendMessage('Could not remove reaction role assignment; no numbers of reacts to remove were given');
-			return;
-		}
-
 		if (!this.serverConfig.selfAssign.categoryExists(category)) {
 			this.sendMessage(`Could not remove reaction role assignment; category \`\`${firstLetterUppercase(category)}\`\` does not exist`);
+			return;
+		}
+
+		const role = this.input.ROLE || this.input.R || this.getUserInput('`> enter role name`');
+		const toRemove = (this.input.REMOVE || this.input.RM || this.getUserInput('`> enter indexes to remove`')).split(' ') as Array<number>;
+
+		if (!role) {
+			this.sendMessage('Could not remove reaction role assignment; no role was given');
 			return;
 		}
 
@@ -40,6 +36,11 @@ export class RemoveEmoteCommand extends AdminCommand implements BaseCommandInter
 
 		if (!this.serverConfig.selfAssign.roleIsInCategory(category, guildRole.id)) {
 			this.sendMessage(`Could not remove reaction role assignment; role \`\`${guildRole.name}\`\` is not in category \`\`${firstLetterUppercase(category)}\`\``);
+			return;
+		}
+
+		if (!toRemove.length) {
+			this.sendMessage('Could not remove reaction role assignment; no numbers of reacts to remove were given');
 			return;
 		}
 

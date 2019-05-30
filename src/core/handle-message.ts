@@ -5,7 +5,7 @@ import { ServerConfig } from "./server-config";
 import { GlobalConfig } from "../global-config";
 
 export async function handleMessage(message: Message, client: Client, prefixes: any) {
-	if (message.author.bot || !message.guild) {
+	if (message.author.id === client.user.id || !message.guild) {
 		return;
 	}
 

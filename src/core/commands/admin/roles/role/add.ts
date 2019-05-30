@@ -6,24 +6,29 @@ export class AddRoleCommand extends AdminCommand implements BaseCommandInterface
     public runCommand() {
         this.loadInput();
 
-		const roleName = this.input.ROLE || this.input.R;
-		const categoryName = this.input.CATEGORY || this.input.C;
+		const roleName = this.input.ROLE || this.input.R || this.getUserInput('`> enter role name`');
 
-		if (!roleName || !categoryName) {
-			this.sendMessage(`Could not add self-assignable role; this command requires inputs, \`\`role:{${roleName ? 'true' : 'false'}}\`\` \`\`category:{${categoryName ? 'true' : 'false'}}\`\``);
+		if (!roleName) {
+			this.sendMessage(`Could not add self-assignable role; no role was given`);
 			return;
 		}
-
-		if (!this.serverConfig.selfAssign.categoryExists(categoryName)) {
-			this.sendMessage(`Could not add self-assignable role; category \`\`${firstLetterUppercase(categoryName)}\`\` does not exist`);
-			return;
-		}
-
 
 		const role = this.message.guild.roles.find(r => r.name.toUpperCase() === roleName);
 
 		if (!role) {
 			this.sendMessage(`Could not add self-assignable role; role \`\`${firstLetterUppercase(roleName)}\`\` does not exist`);
+			return;
+		}
+
+		const categoryName = this.input.CATEGORY || this.input.C || this.getUserInput('`> enter category name`');
+
+		if (!categoryName) {
+			this.sendMessage(`Could not add self-assignable role; no category was given`);
+			return;
+		}
+
+		if (!this.serverConfig.selfAssign.categoryExists(categoryName)) {
+			this.sendMessage(`Could not add self-assignable role; category \`\`${firstLetterUppercase(categoryName)}\`\` does not exist`);
 			return;
 		}
 

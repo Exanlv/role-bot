@@ -13,16 +13,16 @@ export class CategorySwapCommand extends AdminCommand implements BaseCommandInte
 			return;
 		}
 
+		if (!this.serverConfig.selfAssign.categoryExists(categoryOne)) {
+			this.sendMessage(`Could not swap categories; category \`\`${firstLetterUppercase(categoryOne)}\`\` does not exist`);
+			return;			
+		}
+
 		const categoryTwo = this.input.CATEGORY2 || this.input.C2 || await this.getUserInput('`> enter the name of the second category`');
 
 		if (!categoryTwo) {
 			this.sendMessage('Could not swap categories; category 2 is missing');
 			return;
-		}
-
-		if (!this.serverConfig.selfAssign.categoryExists(categoryOne)) {
-			this.sendMessage(`Could not swap categories; category \`\`${firstLetterUppercase(categoryOne)}\`\` does not exist`);
-			return;			
 		}
 
 		if (!this.serverConfig.selfAssign.categoryExists(categoryTwo)) {

@@ -23,17 +23,21 @@ export class ServerConfig {
 		}
 	}
 
-	/**
-	 * Saves the config to disk
-	 * @param id Id of the guild
-	 */
-	public saveConfig() {
-		writeFileSync(`${GlobalConfig.dataDir}/configs/${this.serverId}.json`, JSON.stringify({
+	public getRaw() {
+		return {
 			'prefix' : this.prefix,
 			'activeChannels': this.activeChannels,
 			'adminRoles': this.adminRoles,
 			'selfAssign': this.selfAssign.raw()
-		}));
+		};
+	}
+
+	/**
+	 * Saves the config to disk
+	 * @param id Id of the guild
+	 */
+	public saveConfig(conf = null) {
+		writeFileSync(`${GlobalConfig.dataDir}/configs/${this.serverId}.json`, JSON.stringify(conf || this.getRaw()));
 	}
 
 	/**
@@ -71,6 +75,14 @@ export class ServerConfig {
 	 */
 	public addActiveChannel(id: string): void {
 		this.activeChannels.push(id);
+		this.saveConfig();
+	}
+
+	public reset() {
+		this.prefix = ';;';
+		this.activeChannels = [];
+		this.adminRoles = [];
+		this.selfAssign = new SelfAssign;
 		this.saveConfig();
 	}
 }
