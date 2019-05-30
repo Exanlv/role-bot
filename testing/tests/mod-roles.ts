@@ -1,4 +1,4 @@
-import { Guild, TextChannel } from "discord.js";
+import { Guild, TextChannel, Message } from "discord.js";
 import { getBotResponse } from "..";
 
 export async function testModRoles(server: Guild, channel: TextChannel) {
@@ -25,6 +25,14 @@ export async function testModRoles(server: Guild, channel: TextChannel) {
 		}
 	
 		console.log('Mod Roles - Adding mod role twice: SUCCESS');
+
+		const mrList = await getBotResponse(channel, '!rbt mr');
+		if (!mrList || (mrList as Message).embeds.length < 1 || (mrList as Message).embeds[0].fields[0].value !== `- ${testRole.name}`) {
+			console.log('Active Channels - Mod roles list: FAILED');
+			return;
+		}
+
+		console.log('Active Channels - Mod roles list: SUCCESS');
 	
 		if (await getBotResponse(channel, `!rbt mr r ${testRole.name}`, `Removed role \`\`${testRole.name}\`\` from mod-roles`)) {
 			console.log('Mod Roles - Removing mod role: FAILED');
