@@ -1,10 +1,11 @@
-import { Client, Message, Guild, GuildChannel } from 'discord.js';
+import { Client, Message, Guild, GuildChannel, GuildMember, TextChannel } from 'discord.js';
 import { GlobalConfig } from './global-config';
 import { ServerConfig } from './core/server-config';
 import { ShortReact } from './shared/classes/short-react';
 import { CommandConfig } from './shared/classes/command-config';
 import { getCommandConfig } from './core/command-configs';
 import { EventEmitter } from 'events';
+import { MessageReactionsConfig } from './shared/classes/message-reactions-config';
 
 export class RoleBot extends EventEmitter {
 	private client: Client;
@@ -41,6 +42,7 @@ export class RoleBot extends EventEmitter {
 			this.handleOnChannelDelete();
 			this.handleOnRoleDelete();
 			this.handleOnRawMessageDelete();
+			this.handleOnGuildMemberAdd();
 			this.emit('BotReady');
 		});
 	}
@@ -283,43 +285,45 @@ export class RoleBot extends EventEmitter {
 			}
 		});
 	}
+
+	private handleOnGuildMemberAdd() {
+		this.client.on('guildMemberAdd', guildMember => {
+			const config = this.configs[guildMember.guild.id];
+
+			config.selfAssign.getAllReactions().forEach(async messageReactionsConfig => {
+				const channel = guildMember.guild.channels.find(c => c.id === messageReactionsConfig.channelId) as TextChannel;
+
+				if (!channel) {
+					config.selfAssign.handleRemovedChannel(messageReactionsConfig.channelId);
+					config.saveConfig();
+					return;
+				}
+
+				const message = await channel.fetchMessage(messageReactionsConfig.messageId);
+
+				if (!message) {
+					config.selfAssign.handleRemovedMessage(messageReactionsConfig.messageId);
+					config.saveConfig();
+					return;
+				}
+
+				message.reactions.tap(async reaction => {
+					const role = messageReactionsConfig.reactions.find(e => e.emoteIdentifier === (reaction.emoji.id ? reaction.emoji.identifier.toUpperCase() : reaction.emoji.name));
+					if (role) {
+						const guildRole = guildMember.guild.roles.find(r => r.id === role.roleId);
+
+						if (!guildRole) {
+							config.selfAssign.handleRemovedRole(role.roleId);
+							config.saveConfig();
+							return;
+						}
+						
+						if ((await reaction.fetchUsers(reaction.count)).find(u => u.id === guildMember.id)) {
+							guildMember.addRole(guildRole);
+						}
+					}
+				});
+			});
+		})
+	}
 }
-
-// client.on('guildMemberAdd', guildMember => {
-// 	const serverConfig = new ServerConfig(guildMember.guild.id);
-
-// 	serverConfig.selfAssign.getAllReactions().forEach(async messageReactionConfig => {
-// 		const channel = guildMember.guild.channels.find(c => c.id === messageReactionConfig.channelId) as TextChannel;
-
-// 		if (!channel) {
-// 			serverConfig.selfAssign.handleRemovedChannel(messageReactionConfig.channelId);
-// 			serverConfig.saveConfig();
-// 			return;
-// 		}
-
-// 		const message = await channel.fetchMessage(messageReactionConfig.messageId);
-
-// 		if (!message) {
-// 			serverConfig.selfAssign.handleRemovedMessage(messageReactionConfig.messageId);
-// 			serverConfig.saveConfig();
-// 			return;
-// 		}
-		
-// 		message.reactions.tap(reaction => {
-// 			const role = messageReactionConfig.reactions.find(c => c.emoteIdentifier === (reaction.emoji.id ? reaction.emoji.identifier.toUpperCase() : reaction.emoji.name));
-// 			if (role) {
-// 				const guildRole = guildMember.guild.roles.find(r => r.id === role.roleId);
-
-// 				if (!guildRole) {
-// 					serverConfig.selfAssign.handleRemovedRole(role.roleId);
-// 					serverConfig.saveConfig();
-// 					return;
-// 				}
-
-// 				if(reaction.users.find(u => u.id === guildMember.id)) {
-// 					guildMember.addRole(guildRole);
-// 				}
-// 			}
-// 		});
-// 	});
-// });
