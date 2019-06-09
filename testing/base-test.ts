@@ -39,7 +39,7 @@ export class BaseTest {
 		const channel = options.channel || this.testChannel;
 		const expectedResponse = options.response;
 
-		await channel.send(command)
+		channel.send(command)
 		const message = (await channel.awaitMessages(m => m.author.id === '573067073761312787', {maxMatches: 1, time: time})).first() as Message || null;
 
 		if (!message)

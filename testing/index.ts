@@ -3,6 +3,7 @@ import { ActiveChannelsTest } from './tests/active-channels';
 import { ModRolesTest } from './tests/mod-roles';
 import { RoleBot } from '../src/bot';
 import { GlobalConfig } from '../src/global-config';
+import { PrefixTest } from './tests/prefix';
 
 export function sleep(ms: number) {
     return new Promise( resolve => setTimeout(resolve, ms) );
@@ -40,8 +41,10 @@ class TestingBot {
 
 	private async runTests() {
 		const tests = [];
+
 		tests.push(new ActiveChannelsTest(this.client, this.testServer, this.testChannel));
 		tests.push(new ModRolesTest(this.client, this.testServer, this.testChannel));
+		tests.push(new PrefixTest(this.client, this.testServer, this.testChannel));
 
 		for(let i = 0; i < tests.length; i++) {
 			const currentConfig = this.roleBot.configs[this.testServer.id].getRaw();
@@ -53,7 +56,9 @@ class TestingBot {
 				console.log(err);
 			}
 
-			await tests[i].cleanUp();
+			if (tests[i].cleanUp)
+				await tests[i].cleanUp();
+				
 			this.roleBot.configs[this.testServer.id].saveConfig(currentConfig);
 
 			await sleep(1500);
