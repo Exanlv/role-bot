@@ -1,6 +1,7 @@
 import { Guild, Client, TextChannel, Message } from "discord.js";
 import { RunCommandOptions } from "./classes/runcommand-options";
 import { ServerConfig } from "../src/core/server-config";
+import { GlobalConfig } from "../src/global-config";
 
 export class BaseTest {
 	protected name: string;
@@ -16,16 +17,6 @@ export class BaseTest {
 		this.client = client;
 		this.testServer = testServer;
 		this.testChannel = testChannel;
-	}
-
-	public startUp() {
-		this.serverConfig = new ServerConfig(this.testServer.id);
-		this.rawConfig = this.serverConfig.getRaw();
-		this.serverConfig.reset();
-	}
-
-	public cleanUp() {
-		this.serverConfig.saveConfig(this.rawConfig);
 	}
 
 	protected resultTest(testCode: string, status: boolean) {

@@ -110,8 +110,6 @@ export class ModRolesTest extends BaseTest implements UnitTest {
 		if (this.testRole) {
 			await this.testRole.delete();
 		}
-
-		super.cleanUp();
 	}
 
 	private async modRolesListTest(testCode) {

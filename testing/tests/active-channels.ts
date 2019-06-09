@@ -91,8 +91,6 @@ export class ActiveChannelsTest extends BaseTest implements UnitTest {
 		if (this.secondTestChannel) {
 			await this.secondTestChannel.delete();
 		}
-
-		super.cleanUp();
 	}
 
 	private async activeChannelListTest(testCode) {

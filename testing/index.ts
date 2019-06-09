@@ -1,6 +1,8 @@
 import { Client, TextChannel, Guild } from 'discord.js';
 import { ActiveChannelsTest } from './tests/active-channels';
 import { ModRolesTest } from './tests/mod-roles';
+import { RoleBot } from '../src/bot';
+import { GlobalConfig } from '../src/global-config';
 
 export function sleep(ms: number) {
     return new Promise( resolve => setTimeout(resolve, ms) );
@@ -11,6 +13,8 @@ class TestingBot {
 
 	private testServer: Guild;
 	private testChannel: TextChannel;
+
+	private roleBot: RoleBot;
 
 	constructor(token: string) {
 		this.client = new Client();
@@ -25,7 +29,13 @@ class TestingBot {
 			process.exit();
 		});
 
-		this.client.login(token);
+		this.roleBot = new RoleBot(GlobalConfig.token);
+
+		this.roleBot.on('BotReady', () => {
+			console.log('Role Bot is ready');
+
+			this.client.login(token);
+		});
 	}
 
 	private async runTests() {
@@ -34,13 +44,18 @@ class TestingBot {
 		tests.push(new ModRolesTest(this.client, this.testServer, this.testChannel));
 
 		for(let i = 0; i < tests.length; i++) {
-			await tests[i].startUp();
+			const currentConfig = this.roleBot.configs[this.testServer.id].getRaw();
+			this.roleBot.configs[this.testServer.id].reset();
+
 			try {
 				await tests[i].runTests();
 			} catch(err) {
 				console.log(err);
 			}
+
 			await tests[i].cleanUp();
+			this.roleBot.configs[this.testServer.id].saveConfig(currentConfig);
+
 			await sleep(1500);
 		}
 	}
