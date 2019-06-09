@@ -1,77 +1,102 @@
-import { Guild, TextChannel, Message } from "discord.js";
-import { getBotResponse } from "..";
+import { BaseTest, UnitTest } from "../base-test";
+import { TextChannel, Message } from "discord.js";
 
-export async function testActiveChannels(server: Guild, testChannel: TextChannel) {
-	if (await getBotResponse(testChannel, '!rbt ac', 'There are no active channels')) {
-		console.log('Active Channels - No active channels list: FAILED');
-		return false;
+export class ActiveChannelsTest extends BaseTest implements UnitTest {
+	public name: string = 'Active Channels';
+	private secondTestChannel: TextChannel;
+	public async runTests() {
+
+		/**
+		 * Tests the active channel list when theres no active channels set
+		 */
+		await this.simpleTest(
+			'!rbt ac',
+			'There are no active channels',
+			'No active channels list'
+		);
+
+		/**
+		 * 
+		 */
+		this.secondTestChannel = await this.testServer.createChannel('AUTO-TEST', 'text') as TextChannel;
+
+		/**
+		 * Tests adding an active channel
+		 */
+		await this.simpleTest(
+			`!rbt ac a <#${this.secondTestChannel.id}>`,
+			`Added channel \`\`${this.secondTestChannel.name}\`\` as active channel`,
+			'Add active channel'
+		);
+
+		/**
+		 * Tests whether the bot responds in inactive channels
+		 */
+		this.resultTest('No response in inactive channels', !(await this.runCommand('!rbt ac', {time: 5000}) as boolean));
+
+		/**
+		 * Tests the active channels list command
+		 */
+		await this.activeChannelListTest('Active channels list');
+
+		/**
+		 * Tests adding a channel twice as active channel
+		 */
+		await this.simpleTest(
+			`!rbt ac a <#${this.secondTestChannel.id}>`,
+			'Could not add channel as active channel; this channel already is an active channel',
+			'Add active channel twice',
+			{channel: this.secondTestChannel}
+		);
+
+		/**
+		 * Tests removing a channel from active channels
+		 */
+		await this.simpleTest(
+			`!rbt ac r <#${this.secondTestChannel.id}>`,
+			`Removed channel \`\`${this.secondTestChannel.name}\`\` from active channels`,
+			'Remove active channel',
+			{channel: this.secondTestChannel}
+		);
+
+		/**
+		 * Tests removing a channel from active channels twice
+		 */
+		await this.simpleTest(
+			`!rbt ac r <#${this.secondTestChannel.id}>`,
+			'Could not remove channel from active channels; this channel is not an active channel',
+			'Remove active channel'
+		);
+
+		/**
+		 * Tests adding an invalid channel to active channels
+		 */
+		await this.simpleTest(
+			'!rbt ac a <#12345>',
+			'Could not add channel as active channel; this channel does not exist',
+			'Add invalid channel'
+		);
+
+		/**
+		 * Tests removing an invalid channel to active channels
+		 */
+		await this.simpleTest(
+			'!rbt ac r <#12345>',
+			'Could not remove channel from active channels; this channel does not exist',
+			'Remove invalid channel'
+		);
 	}
 
-	console.log('Active Channels - No active channels list: SUCCESS');
-
-	const newChannel = await server.createChannel('AUTO-TEST', 'text') as TextChannel;
-	try {
-		if (await getBotResponse(testChannel, `!rbt ac a <#${newChannel.id}>`, 'Added channel ``auto-test`` as active channel')) {
-			console.log('Active Channels - Add active channel: FAILED');
-			return false;
+	public async cleanUp() {
+		if (this.secondTestChannel) {
+			await this.secondTestChannel.delete();
 		}
-	
-		console.log('Active Channels - Add active channel: SUCCESS');
 
-		if (await getBotResponse(testChannel, `!rbt ac a <#${newChannel.id}>`)) {
-			console.log('Active Channels - No response inactive channels: FAILED');
-			return false;
-		}
-	
-		console.log('Active Channels - No response inactive channels: SUCCESS');
-
-		const acList = await getBotResponse(newChannel, '!rbt ac');
-		if (!acList || (acList as Message).embeds.length < 1 || (acList as Message).embeds[0].fields[0].value !== '- auto-test') {
-			console.log('Active Channels - Active channels list: FAILED');
-			return;
-		}
-	
-		console.log('Active Channels - Active channels list: SUCCESS');
-
-		if (await getBotResponse(newChannel, `!rbt ac a <#${newChannel.id}>`, 'Could not add channel as active channel; this channel already is an active channel')) {
-			console.log('Active Channels - Add active channel twice: FAILED');
-			return false;
-		}
-	
-		console.log('Active Channels - Add active channel twice: SUCCESS');
-
-		if (await getBotResponse(newChannel, `!rbt ac r <#${newChannel.id}>`, 'Removed channel ``auto-test`` from active channels')) {
-			console.log('Active Channels - Remove active channel: FAILED');
-			return false;
-		}
-	
-		console.log('Active Channels - Remove active channel: SUCCESS');
-
-		if (await getBotResponse(newChannel, `!rbt ac r <#${newChannel.id}>`, 'Could not remove channel from active channels; this channel is not an active channel')) {
-			console.log('Active Channels - Remove active channel twice: FAILED');
-			return false;
-		}
-	
-		console.log('Active Channels - Remove active channel twice: SUCCESS');
-	} catch (err) {
-		console.log(err);
-	}
-	
-	await newChannel.delete();
-
-	if (await getBotResponse(testChannel, '!rbt ac a <#12345>', 'Could not add channel as active channel; this channel does not exist')) {
-		console.log('Active Channels - Add invalid channel: FAILED');
-		return false;
+		super.cleanUp();
 	}
 
-	console.log('Active Channels - Add invalid channel: SUCCESS');
-
-	if (await getBotResponse(testChannel, '!rbt ac r <#12345>', 'Could not remove channel from active channels; this channel does not exist')) {
-		console.log('Active Channels - Remove invalid channel: FAILED');
-		return false;
+	private async activeChannelListTest(testCode) {
+		const message = await this.runCommand('!rbt ac', {channel: this.secondTestChannel}) as Message;
+		this.resultTest(testCode, !(typeof message === "boolean" || (message as Message).embeds.length < 1 || (message as Message).embeds[0].fields[0].value !== `- ${this.secondTestChannel.name}`));
 	}
-
-	console.log('Active Channels - Remove invalid channel: SUCCESS');
-
-	return true;
 }

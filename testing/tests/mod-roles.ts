@@ -1,85 +1,121 @@
-import { Guild, TextChannel, Message } from "discord.js";
-import { getBotResponse } from "..";
+import { BaseTest, UnitTest } from "../base-test";
+import { Role, Message } from "discord.js";
+import { firstLetterUppercase } from '../../src/core/functions';
 
-export async function testModRoles(server: Guild, channel: TextChannel) {
-	if (await getBotResponse(channel, '!rbt mr', 'There are no mod-roles')) {
-		console.log('Mod Roles - No mod roles: FAILED');
-		return false;
+export class ModRolesTest extends BaseTest implements UnitTest {
+	public name: string = 'Mod Roles'
+	public testRole: Role;
+
+	public async runTests() {
+		/**
+		 * Tests listing mod roles when there are no mod roles
+		 */
+		await this.simpleTest(
+			'!rbt mr',
+			'There are no mod-roles',
+			'No mod roles list'
+		);
+
+		/**
+		 * Role used for testing mod roles
+		 */
+		this.testRole = await this.testServer.createRole({name: 'AUTO-TEST-ROLE'});
+
+		/**
+		 * Tests adding a role as mod role
+		 */
+		await this.simpleTest(
+			`!rbt mr a ${this.testRole.name}`,
+			`Added role \`\`${this.testRole.name}\`\` as mod-role`,
+			'Adding mod role'
+		);
+
+		/**
+		 * Tests adding a role as mod role twice
+		 */
+		await this.simpleTest(
+			`!rbt mr a ${this.testRole.name}`,
+			`Could not add mod-role; role \`\`${this.testRole.name}\`\` is already a mod-role`,
+			'Adding mod role'
+		);
+
+		/**
+		 * Tests the mod role list
+		 */
+		await this.modRolesListTest('Mod roles list');
+
+		/**
+		 * Tests removing a modrole
+		 */
+		await this.simpleTest(
+			`!rbt mr r ${this.testRole.name}`,
+			`Removed role \`\`${this.testRole.name}\`\` from mod-roles`,
+			'Removing mod role'
+		)
+
+		/**
+		 * Tests removing a modrole twice
+		 */
+		await this.simpleTest(
+			`!rbt mr r ${this.testRole.name}`,
+			`Could not remove mod-role; role \`\`${this.testRole.name}\`\` is not a mod-role`,
+			'Removing mod role'
+		)
+
+		/**
+		 * Invalid role name
+		 */
+		const fakeRoleName = 'WhAtEVR-ThiS-ROlE-DoESNt-EXIST-LoL153';
+
+		/**
+		 * Tests adding a role that does not exist to mod roles
+		 */
+		await this.simpleTest(
+			`!rbt mr a ${fakeRoleName}`,
+			`Could not add mod-role; role \`\`${firstLetterUppercase(fakeRoleName)}\`\` does not exist`,
+			'Adding invalid role'
+		);
+
+		/**
+		 * Tests removing a role that does not exist to mod roles
+		 */
+		await this.simpleTest(
+			`!rbt mr r ${fakeRoleName}`,
+			`Could not remove mod-role; role \`\`${firstLetterUppercase(fakeRoleName)}\`\` does not exist`,
+			'Removing invalid role'
+		);
+
+		/**
+		 * Tests adding a mod role without giving a name
+		 */
+		await this.simpleTestDoubleResponse(
+			'!rbt mr a',
+			'``> enter role name``',
+			'Could not add mod-role; no role name was provided',
+			'Add empty mod role'
+		);
+
+		/**
+		 * Tests removing a mod role without giving a name
+		 */
+		await this.simpleTestDoubleResponse(
+			'!rbt mr r',
+			'``> enter role name``',
+			'Could not remove mod-role; no role name was provided',
+			'Remove empty mod role'
+		);
 	}
 
-	console.log('Mod Roles - No mod roles: SUCCESS');
-
-	const testRole = await server.createRole({name: 'AUTO-TEST-ROLE'});
-
-	try {
-		if (await getBotResponse(channel, `!rbt mr a ${testRole.name}`, `Added role \`\`${testRole.name}\`\` as mod-role`)) {
-			console.log('Mod Roles - Adding mod role: FAILED');
-			return false;
+	public async cleanUp() {
+		if (this.testRole) {
+			await this.testRole.delete();
 		}
-	
-		console.log('Mod Roles - Adding mod role: SUCCESS');
-	
-		if (await getBotResponse(channel, `!rbt mr a ${testRole.name}`, `Could not add mod-role; role \`\`${testRole.name}\`\` is already a mod-role`)) {
-			console.log('Mod Roles - Adding mod role twice: FAILED');
-			return false;
-		}
-	
-		console.log('Mod Roles - Adding mod role twice: SUCCESS');
 
-		const mrList = await getBotResponse(channel, '!rbt mr');
-		if (!mrList || (mrList as Message).embeds.length < 1 || (mrList as Message).embeds[0].fields[0].value !== `- ${testRole.name}`) {
-			console.log('Active Channels - Mod roles list: FAILED');
-			return;
-		}
-
-		console.log('Active Channels - Mod roles list: SUCCESS');
-	
-		if (await getBotResponse(channel, `!rbt mr r ${testRole.name}`, `Removed role \`\`${testRole.name}\`\` from mod-roles`)) {
-			console.log('Mod Roles - Removing mod role: FAILED');
-			return false;
-		}
-	
-		console.log('Mod Roles - Removing mod role: SUCCESS');
-	
-		if (await getBotResponse(channel, `!rbt mr r ${testRole.name}`, `Could not remove mod-role; role \`\`${testRole.name}\`\` is not a mod-role`)) {
-			console.log('Mod Roles - Removing mod role twice: FAILED');
-			return false;
-		}
-	} catch(err) {
-		console.log(err);
+		super.cleanUp();
 	}
 
-	testRole.delete();
-	
-	console.log('Mod Roles - Removing mod role twice: SUCCESS');
-
-	if (await getBotResponse(channel, '!rbt mr a THIS-ROLE-DOES-NOT-EXIST', 'Could not add mod-role; role ``This-role-does-not-exist`` does not exist')) {
-		console.log('Mod Roles - Adding invalid role: FAILED');
-		return false;
+	private async modRolesListTest(testCode) {
+		const message = await this.runCommand('!rbt mr') as Message;
+		this.resultTest(testCode, !(typeof message === "boolean" || (message as Message).embeds.length < 1 || (message as Message).embeds[0].fields[0].value !== `- ${this.testRole.name}`));
 	}
-
-	console.log('Mod Roles - Adding invalid role: SUCCESS');
-
-	if (await getBotResponse(channel, '!rbt mr r THIS-ROLE-DOES-NOT-EXIST', 'Could not remove mod-role; role ``This-role-does-not-exist`` does not exist')) {
-		console.log('Mod Roles - Adding invalid role: FAILED');
-		return false;
-	}
-
-	console.log('Mod Roles - Removing invalid role: SUCCESS');
-
-	if (await getBotResponse(channel, '!rbt mr a', 'Could not add mod-role; no role name was provided')) {
-		console.log('Mod Roles - Adding no role: FAILED');
-		return false;
-	}
-
-	console.log('Mod Roles - Adding no role: SUCCESS');
-
-	if (await getBotResponse(channel, '!rbt mr r', 'Could not remove mod-role; no role name was provided')) {
-		console.log('Mod Roles - Removing no role: FAILED');
-		return false;
-	}
-
-	console.log('Mod Roles - Removing no role: SUCCESS');
-
-	return true;
 }

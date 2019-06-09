@@ -1,57 +1,49 @@
-import { Client, TextChannel, Message, Guild } from 'discord.js';
-import { testActiveChannels } from './tests/active-channels';
-import { ServerConfig } from '../src/core/server-config';
-import { testModRoles } from './tests/mod-roles';
+import { Client, TextChannel, Guild } from 'discord.js';
+import { ActiveChannelsTest } from './tests/active-channels';
+import { ModRolesTest } from './tests/mod-roles';
 
 export function sleep(ms: number) {
     return new Promise( resolve => setTimeout(resolve, ms) );
 }
 
-export async function getBotResponse(channel: TextChannel, message: string, expectedResponse: string = null): Promise<Message|boolean> {
-	await channel.send(message);
+class TestingBot {
+	private client: Client;
 
-	const responseMessage = (await channel.awaitMessages(m => m.author.id === '573067073761312787', {maxMatches: 1, time: 15000})).first() as Message || false;
+	private testServer: Guild;
+	private testChannel: TextChannel;
 
-	if (!expectedResponse)
-		return responseMessage;
+	constructor(token: string) {
+		this.client = new Client();
 
-	return (!responseMessage || responseMessage.content !== expectedResponse);
-}
+		this.client.on('ready', async () => {
+			console.log('Bot logged in');
 
-const client = new Client;
-const testServerId = '575395886117421083';
+			this.testServer = this.client.guilds.find(g => g.id === '575395886117421083');
+			this.testChannel = this.testServer.channels.find(c => c.id === '577119668448526359') as TextChannel;
 
-client.on('ready', async () => {
-	console.log('Test started');
+			await this.runTests();
+			process.exit();
+		});
 
-	const testServer = client.guilds.find(g => g.id === testServerId);
-	const testChannel = testServer.channels.find(c => c.id === '577119668448526359') as TextChannel;
-
-	await runTest(testActiveChannels, testServer, testChannel);
-	await runTest(testModRoles, testServer, testChannel);
-
-	console.log('Bot passed all tests \\o/')
-	process.exit();
-});
-
-async function runTest(func: Function, testServer: Guild, testChannel: TextChannel) {
-	const serverConfig = new ServerConfig(testServerId);
-	const confData = serverConfig.getRaw();
-	serverConfig.reset();
-
-	let result;
-
-	try {
-		result = await func(testServer, testChannel);
-	} catch (err) {
-		console.log(err);
+		this.client.login(token);
 	}
 
-	serverConfig.saveConfig(confData);
+	private async runTests() {
+		const tests = [];
+		tests.push(new ActiveChannelsTest(this.client, this.testServer, this.testChannel));
+		tests.push(new ModRolesTest(this.client, this.testServer, this.testChannel));
 
-	if (!result) {
-		process.exit();
+		for(let i = 0; i < tests.length; i++) {
+			await tests[i].startUp();
+			try {
+				await tests[i].runTests();
+			} catch(err) {
+				console.log(err);
+			}
+			await tests[i].cleanUp();
+			await sleep(1500);
+		}
 	}
 }
 
-client.login('NTgzMzI3OTMxOTU5NjA3Mjk3.XO6xnQ.Fri4M80_9Ie0my2GS0e2zFls5XQ');
+new TestingBot('NTgzMzI3OTMxOTU5NjA3Mjk3.XO6xnQ.Fri4M80_9Ie0my2GS0e2zFls5XQ');

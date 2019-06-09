@@ -3,8 +3,8 @@ import { BaseCommandInterface } from "../../../base-command";
 import { firstLetterUppercase } from "../../../functions";
 
 export class RemoveModRoleCommand extends AdminCommand implements BaseCommandInterface {
-	public runCommand() {
-		const roleName = this.args.join(' ');
+	public async runCommand() {
+		const roleName = this.args.join(' ') || await this.getUserInput('``> enter role name``');
 
 		if (!roleName) {
 			this.sendMessage('Could not remove mod-role; no role name was provided');

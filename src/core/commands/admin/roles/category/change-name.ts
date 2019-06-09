@@ -6,14 +6,14 @@ export class ChangeCategoryNameCommand extends AdminCommand implements BaseComma
 	public async runCommand() {
 		this.loadInput();
 
-		const oldName = this.input.OLDNAME || this.input.ON || await this.getUserInput('`> enter the name of the category you want to change`');
+		const oldName = this.input.OLDNAME || this.input.ON || await this.getUserInput('``> enter the name of the category you want to change``');
 
 		if (!oldName) {
 			this.sendMessage(`Could not change category name; no current category name was given`);
 			return;
 		}
 
-		const newName = this.input.NEWNAME || this.input.NN || await this.getUserInput('`> enter new name for category`');
+		const newName = this.input.NEWNAME || this.input.NN || await this.getUserInput('``> enter new name for category``');
 
 		if (!newName) {
 			this.sendMessage(`Could not change category name; no new category name was given`);

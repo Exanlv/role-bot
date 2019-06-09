@@ -10,7 +10,7 @@ export class AddEmoteCommand extends AdminCommand implements BaseCommandInterfac
     public async runCommand() {
 		this.loadInput();
 		
-		const roleName = this.input.ROLE || this.input.R || await this.getUserInput('`> enter role name`');
+		const roleName = this.input.ROLE || this.input.R || await this.getUserInput('``> enter role name``');
 
 		if (!roleName) {
 			this.sendMessage('Could not add reaction role assignment; no role was given');
@@ -24,7 +24,7 @@ export class AddEmoteCommand extends AdminCommand implements BaseCommandInterfac
 			return;
 		}
 
-		const categoryName = this.input.CATEGORY || this.input.C || await this.getUserInput('`> enter category name`');
+		const categoryName = this.input.CATEGORY || this.input.C || await this.getUserInput('``> enter category name``');
 
 		if (!categoryName) {
 			this.sendMessage('Could not add reaction role assignment; no category was given');
@@ -42,7 +42,7 @@ export class AddEmoteCommand extends AdminCommand implements BaseCommandInterfac
 		}
 
 		let messageLink = this.args.find(a => a.startsWith('HTTPS://DISCORDAPP.COM/CHANNELS/'));
-		if(!messageLink) messageLink = await this.getUserInput('`> enter message link`') || '';
+		if(!messageLink) messageLink = await this.getUserInput('``> enter message link``') || '';
 		const messageData = messageLink.replace('HTTPS://DISCORDAPP.COM/CHANNELS/', '').split('/');
 
 		if (!messageData) {
