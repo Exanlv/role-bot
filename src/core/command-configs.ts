@@ -179,13 +179,13 @@ export const COMMANDCONFIGS: CommandConfigs = {
 	]
 }
 
-export function getCommandConfig(type: 'dev' | 'admin' | 'public', args: Array<string>) {
+export function getCommandConfig(type: 'dev' | 'admin' | 'public', args: Array<string>): CommandConfig {
 	let CommandConfig = COMMANDCONFIGS[type].find(c => c.key.includes(args[0])) || false;
 
 	args.splice(0, 1);
 
 	if (!CommandConfig) {
-		return false;
+		return;
 	}
 
 	let final = false;

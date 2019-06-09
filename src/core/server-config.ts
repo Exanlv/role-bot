@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { existsSync, readFileSync, writeFileSync, unlink } from 'fs';
 import { GlobalConfig } from "../global-config";
 import { SelfAssign } from "../shared/classes/self-assign";
 
@@ -8,14 +8,16 @@ export class ServerConfig {
 	public activeChannels: Array<string> = [];
 	public adminRoles: Array<string> = [];
 	public selfAssign: SelfAssign = new SelfAssign;
+	public confDir: string;
 
-	constructor(id: string) {
+	constructor(id: string, dataDir: string) {
+		this.confDir = dataDir;
 		this.serverId = id;
-		if (!existsSync(`${GlobalConfig.dataDir}/configs/${this.serverId}.json`)) {
+		if (!existsSync(`${this.confDir}/${this.serverId}.json`)) {
 			this.saveConfig();
 			return;
 		} else {
-			const savedConfig = JSON.parse(readFileSync(`${GlobalConfig.dataDir}/configs/${this.serverId}.json`).toString());
+			const savedConfig = JSON.parse(readFileSync(`${this.confDir}/${this.serverId}.json`).toString());
 			this.prefix = savedConfig.prefix;
 			this.activeChannels = savedConfig.activeChannels;
 			this.adminRoles = savedConfig.adminRoles;
@@ -37,7 +39,17 @@ export class ServerConfig {
 	 * @param id Id of the guild
 	 */
 	public saveConfig(conf = null) {
-		writeFileSync(`${GlobalConfig.dataDir}/configs/${this.serverId}.json`, JSON.stringify(conf || this.getRaw()));
+		writeFileSync(`${this.confDir}/${this.serverId}.json`, JSON.stringify(conf || this.getRaw()));
+	}
+
+	public delete() {
+		if (existsSync(`${this.confDir}/${this.serverId}.json`)) {
+			unlink(`${this.confDir}/${this.serverId}.json`, err => {
+				if (err) {
+					console.log(err);
+				}
+			});
+		}
 	}
 
 	/**

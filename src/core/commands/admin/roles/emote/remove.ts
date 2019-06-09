@@ -4,10 +4,10 @@ import { firstLetterUppercase } from "../../../../functions";
 import { TextChannel } from "discord.js";
 
 export class RemoveEmoteCommand extends AdminCommand implements BaseCommandInterface {
-    public runCommand() {
+    public async runCommand() {
 		this.loadInput();
 		
-		const category = this.input.CATEGORY || this.input.C || this.getUserInput('``> enter category name``');
+		const category = this.input.CATEGORY || this.input.C || await this.getUserInput('``> enter category name``');
 
 		if (!category) {
 			this.sendMessage('Could not remove reaction role assignment; no category was given');
@@ -19,8 +19,8 @@ export class RemoveEmoteCommand extends AdminCommand implements BaseCommandInter
 			return;
 		}
 
-		const role = this.input.ROLE || this.input.R || this.getUserInput('``> enter role name``');
-		const toRemove = (this.input.REMOVE || this.input.RM || this.getUserInput('``> enter indexes to remove``')).split(' ') as Array<number>;
+		const role = this.input.ROLE || this.input.R || await this.getUserInput('``> enter role name``');
+		const toRemove = (this.input.REMOVE || this.input.RM || await this.getUserInput('``> enter indexes to remove``')).split(' ') as Array<number>;
 
 		if (!role) {
 			this.sendMessage('Could not remove reaction role assignment; no role was given');
