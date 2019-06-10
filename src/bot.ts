@@ -7,15 +7,21 @@ import { getCommandConfig } from './core/command-configs';
 import { EventEmitter } from 'events';
 
 export class RoleBot extends EventEmitter {
-	private client: Client;
 	private token: string;
+	private client: Client;
+
 	public configs: {[id: string]: ServerConfig} = {};
+
 	private prefixes: {dev?: string, admin?: string} = {};
+
 	private developerIds: Array<string> = [];
+
+	private rootDir: string;
 	private dataDir: string;
+
 	private color: string;
 
-	constructor(token) {
+	constructor(token, rootDir) {
 		super();
 		
 		this.client = new Client();
@@ -26,7 +32,8 @@ export class RoleBot extends EventEmitter {
 
 		this.developerIds = GlobalConfig.developers;
 
-		this.dataDir = GlobalConfig.dataDir;
+		this.rootDir = rootDir;
+		this.dataDir = `${this.rootDir}/data`;
 
 		this.color = GlobalConfig.color;
 
@@ -46,6 +53,7 @@ export class RoleBot extends EventEmitter {
 			this.handleOnRawMessageDelete();
 			this.handleOnGuildMemberAdd();
 			this.handleOnCommand();
+			
 			this.emit('BotReady');
 		});
 	}
