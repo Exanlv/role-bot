@@ -24,7 +24,6 @@ export class AddModRoleCommand extends AdminCommand implements BaseCommandInterf
 		}
 
 		this.serverConfig.adminRoles.push(role.id);
-		this.serverConfig.saveConfig();
 		this.sendMessage(`Added role \`\`${role.name}\`\` as mod-role`);
 	}
 }

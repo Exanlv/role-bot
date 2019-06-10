@@ -2,8 +2,8 @@ import { Client, TextChannel, Guild } from 'discord.js';
 import { ActiveChannelsTest } from './tests/active-channels';
 import { ModRolesTest } from './tests/mod-roles';
 import { RoleBot } from '../src/bot';
-import { GlobalConfig } from '../src/global-config';
 import { PrefixTest } from './tests/prefix';
+import { readFileSync } from 'fs';
 
 export function sleep(ms: number) {
     return new Promise( resolve => setTimeout(resolve, ms) );
@@ -15,10 +15,14 @@ class TestingBot {
 	private testServer: Guild;
 	private testChannel: TextChannel;
 
+	private rootDir: string;
+
 	private roleBot: RoleBot;
 
-	constructor(token: string) {
+	constructor(token: string, rootDir) {
 		this.client = new Client();
+
+		this.rootDir = rootDir;
 
 		this.client.on('ready', async () => {
 			console.log('Bot logged in');
@@ -30,7 +34,7 @@ class TestingBot {
 			process.exit();
 		});
 
-		this.roleBot = new RoleBot(GlobalConfig.token);
+		this.roleBot = new RoleBot(readFileSync(`${rootDir}/tokens/main.txt`).toString(), rootDir);
 
 		this.roleBot.on('BotReady', () => {
 			console.log('Role Bot is ready');
@@ -43,8 +47,8 @@ class TestingBot {
 		const tests = [];
 
 		tests.push(new ActiveChannelsTest(this.client, this.testServer, this.testChannel));
-		tests.push(new ModRolesTest(this.client, this.testServer, this.testChannel));
-		tests.push(new PrefixTest(this.client, this.testServer, this.testChannel));
+		// tests.push(new ModRolesTest(this.client, this.testServer, this.testChannel));
+		// tests.push(new PrefixTest(this.client, this.testServer, this.testChannel));
 
 		for(let i = 0; i < tests.length; i++) {
 			const currentConfig = this.roleBot.configs[this.testServer.id].getRaw();
@@ -66,4 +70,10 @@ class TestingBot {
 	}
 }
 
-new TestingBot('NTgzMzI3OTMxOTU5NjA3Mjk3.XO6xnQ.Fri4M80_9Ie0my2GS0e2zFls5XQ');
+const rootDir = (() => {
+	let dir = __dirname.split('\\');
+	dir.splice(dir.length - 1, 1);
+	return dir.join('/');
+})();
+
+new TestingBot(readFileSync(`${rootDir}/tokens/testing.txt`).toString(), rootDir);

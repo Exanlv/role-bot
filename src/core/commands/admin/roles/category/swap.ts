@@ -31,7 +31,6 @@ export class CategorySwapCommand extends AdminCommand implements BaseCommandInte
 		}
 
 		this.serverConfig.selfAssign.swapCategories(this.serverConfig.selfAssign.getCategory(categoryOne), this.serverConfig.selfAssign.getCategory(categoryTwo));
-		this.serverConfig.saveConfig();
 		this.sendMessage(`Swapped categories \`\`${firstLetterUppercase(categoryOne)}\`\` and \`\`${firstLetterUppercase(categoryTwo)}\`\``);
 	}
 }

@@ -33,6 +33,5 @@ export class RemoveRoleCommand extends AdminCommand implements BaseCommandInterf
 
 		this.serverConfig.selfAssign.removeRole(categoryName, role.id);
 		this.sendMessage(`Removed role \`\`${role.name}\`\` from self-assignable roles in category \`\`${firstLetterUppercase(categoryName)}\`\``);
-		this.serverConfig.saveConfig();   
     }
 }

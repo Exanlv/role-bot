@@ -18,6 +18,5 @@ export class RemoveCategoryCommand extends AdminCommand implements BaseCommandIn
 
 		this.serverConfig.selfAssign.removeCategory(categoryName);
 		this.sendMessage(`Removed category \`\`${firstLetterUppercase(categoryName)}\`\``);
-		this.serverConfig.saveConfig();
     }
 }

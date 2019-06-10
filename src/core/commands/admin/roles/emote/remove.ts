@@ -46,7 +46,6 @@ export class RemoveEmoteCommand extends AdminCommand implements BaseCommandInter
 
 		const messageReactionsToRemove = this.serverConfig.selfAssign.removeEmotes(category, guildRole.id, toRemove);
 
-		this.serverConfig.saveConfig();
 
 		messageReactionsToRemove.forEach(async conf => {
 			const channel = this.message.guild.channels.find(c => c.id === conf.channelId) as TextChannel;

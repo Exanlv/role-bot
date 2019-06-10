@@ -25,6 +25,10 @@ export class ServerConfig {
 			this.selfAssign = new SelfAssign(savedConfig.selfAssign);
 			this.logChannel = savedConfig.logChannel;
 		}
+
+		this.selfAssign.on('ValuesChanged', () => {
+			this.saveConfig();
+		})
 	}
 
 	public getRaw() {

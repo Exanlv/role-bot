@@ -78,7 +78,6 @@ export class ListEmoteCommand extends AdminCommand implements BaseCommandInterfa
 	
 				if(!role) {
 					this.serverConfig.selfAssign.handleRemovedRole(roleConfig.id);
-					this.serverConfig.saveConfig();
 					return;
 				}
 	

@@ -39,6 +39,5 @@ export class AddRoleCommand extends AdminCommand implements BaseCommandInterface
 
 		this.serverConfig.selfAssign.addRole(categoryName, role.id);
 		this.sendMessage(`Added role \`\`${role.name}\`\` as self-assignable role in category \`\`${firstLetterUppercase(categoryName)}\`\``);
-		this.serverConfig.saveConfig();   
     }
 }

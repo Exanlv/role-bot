@@ -1,7 +1,11 @@
 import { RoleBot } from "./bot";
 import { readFileSync, existsSync, mkdirSync } from "fs";
 
-const rootDir: string = `${__dirname}/..`.replace(/\\/g, '/');
+const rootDir = (() => {
+	let dir = __dirname.split('\\');
+	dir.splice(dir.length - 1, 1);
+	return dir.join('/');
+})();
 
 const requiredDirs: Array<string> = [
 	`${rootDir}/data`,

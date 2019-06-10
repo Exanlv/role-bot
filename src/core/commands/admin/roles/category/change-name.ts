@@ -36,7 +36,6 @@ export class ChangeCategoryNameCommand extends AdminCommand implements BaseComma
 		}
 
 		this.serverConfig.selfAssign.changeCategoryName(oldName, newName);
-		this.serverConfig.saveConfig();
 
 		this.sendMessage(`Category \`\`${firstLetterUppercase(oldName)}\`\` changed to \`\`${firstLetterUppercase(newName)}\`\``);
 	}

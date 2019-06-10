@@ -23,6 +23,5 @@ export class AddCategoryCommand extends AdminCommand implements BaseCommandInter
 
 		this.serverConfig.selfAssign.addCategory(categoryName);
 		this.sendMessage(`Added category \`\`${firstLetterUppercase(categoryName)}\`\``);
-		this.serverConfig.saveConfig();
     }
 }

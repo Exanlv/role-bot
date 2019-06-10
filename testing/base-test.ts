@@ -1,7 +1,6 @@
 import { Guild, Client, TextChannel, Message } from "discord.js";
 import { RunCommandOptions } from "./classes/runcommand-options";
 import { ServerConfig } from "../src/core/server-config";
-import { GlobalConfig } from "../src/global-config";
 
 export class BaseTest {
 	protected name: string;

@@ -24,7 +24,6 @@ export class RemoveModRoleCommand extends AdminCommand implements BaseCommandInt
 		}
 
 		this.serverConfig.adminRoles.splice(this.serverConfig.adminRoles.indexOf(role.id), 1);
-		this.serverConfig.saveConfig();
 		this.sendMessage(`Removed role \`\`${role.name}\`\` from mod-roles`);
 	}
 }

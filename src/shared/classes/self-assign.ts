@@ -2,11 +2,14 @@ import { RoleCategory } from "./role-category";
 import { RoleConfig } from "./role-config";
 import { RoleReact } from "./role-react";
 import { MessageReactionsConfig, ReactionConf } from "./message-reactions-config";
+import { EventEmitter } from "events";
 
-export class SelfAssign {
+export class SelfAssign extends EventEmitter {
 	private roles: Array<RoleCategory> = [];
 
 	constructor(data?: Array<RoleCategory>) {
+		super();
+
 		if (data) {
 			this.roles = data;
 			return;
@@ -44,6 +47,7 @@ export class SelfAssign {
 		const newCategory = new RoleCategory;
 		newCategory.name = categoryName;
 		this.roles.push(newCategory);
+		this.emit('ValuesChanged');
 	}
 
 	/**
@@ -53,6 +57,7 @@ export class SelfAssign {
 	public removeCategory(categoryName: string): void {
 		const category = this.getCategory(categoryName);
 		this.roles.splice(this.roles.indexOf(category), 1);
+		this.emit('ValuesChanged');
 	}
 
 	/**
@@ -83,6 +88,7 @@ export class SelfAssign {
 		const newRole = new RoleConfig;
 		newRole.id = roleId;
 		this.roles[this.roles.indexOf(category)].roles.push(newRole);
+		this.emit('ValuesChanged');
 	}
 
 	/**
@@ -95,6 +101,7 @@ export class SelfAssign {
 		const role = category.roles.find(r => r.id === roleId);
 		const categoryIndex = this.roles.indexOf(category); 
 		this.roles[categoryIndex].roles.splice(this.roles[categoryIndex].roles.indexOf(role), 1);
+		this.emit('ValuesChanged');
 	}
 
 	/**
@@ -143,6 +150,7 @@ export class SelfAssign {
 				break;
 			}
 		}
+		this.emit('ValuesChanged');
 	}
 
 	/**
@@ -183,6 +191,7 @@ export class SelfAssign {
 			messageReactionsConfig.push(messageReactionsConf);
 		}
 
+		this.emit('ValuesChanged');
 		return messageReactionsConfig;
 	}
 	
@@ -226,6 +235,7 @@ export class SelfAssign {
 				this.roles[i].name = newName;
 			}
 		}
+		this.emit('ValuesChanged');
 	}
 
 	/**
@@ -242,6 +252,7 @@ export class SelfAssign {
 				}
 			}
 		}
+		this.emit('ValuesChanged');
 	}
 
 	/**
@@ -258,6 +269,7 @@ export class SelfAssign {
 				}
 			}
 		}
+		this.emit('ValuesChanged');
 	}
 
 	/**
@@ -272,6 +284,7 @@ export class SelfAssign {
 				}
 			}
 		}
+		this.emit('ValuesChanged');
 	}
 
 	/**
@@ -319,6 +332,7 @@ export class SelfAssign {
 				}
 			}
 		}
+		this.emit('ValuesChanged');
 	}
 
 	/**
@@ -330,5 +344,6 @@ export class SelfAssign {
 		const indexes = [this.roles.indexOf(categoryOne), this.roles.indexOf(categoryTwo)];
 		this.roles[indexes[0]] = categoryTwo;
 		this.roles[indexes[1]] = categoryOne;
+		this.emit('ValuesChanged');
 	}
 }

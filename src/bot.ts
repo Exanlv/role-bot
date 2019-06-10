@@ -53,7 +53,7 @@ export class RoleBot extends EventEmitter {
 			this.handleOnRawMessageDelete();
 			this.handleOnGuildMemberAdd();
 			this.handleOnCommand();
-			
+
 			this.emit('BotReady');
 		});
 	}
@@ -221,7 +221,6 @@ export class RoleBot extends EventEmitter {
 
 			if (!guildRole) {
 				config.selfAssign.handleRemovedRole(reactRole)
-				config.saveConfig();
 				return;
 			}
 
@@ -237,7 +236,6 @@ export class RoleBot extends EventEmitter {
 
 			if (reaction.member.id === this.client.user.id) {
 				config.selfAssign.handleReactionRemove(reaction.emoteIdentifier.toUpperCase(), reaction.messageId);
-				config.saveConfig();
 				return;
 			}
 
@@ -251,7 +249,6 @@ export class RoleBot extends EventEmitter {
 
 			if (!guildRole) {
 				config.selfAssign.handleRemovedRole(reactRole);
-				config.saveConfig();
 				return;
 			}
 
@@ -272,7 +269,6 @@ export class RoleBot extends EventEmitter {
 			}
 
 			config.selfAssign.handleRemovedChannel(channel.id);
-			config.saveConfig();
 		});
 	}
 
@@ -281,7 +277,6 @@ export class RoleBot extends EventEmitter {
 			const config = this.configs[role.guild.id];
 
 			config.selfAssign.handleRemovedRole(role.id);
-			config.saveConfig();
 		});
 	}
 
@@ -294,7 +289,6 @@ export class RoleBot extends EventEmitter {
 
 				const config = this.configs[raw.d.guild_id];
 				config.selfAssign.handleRemovedMessage(raw.d.id);
-				config.saveConfig();
 			}
 		});
 	}
@@ -308,7 +302,6 @@ export class RoleBot extends EventEmitter {
 
 				if (!channel) {
 					config.selfAssign.handleRemovedChannel(messageReactionsConfig.channelId);
-					config.saveConfig();
 					return;
 				}
 
@@ -316,7 +309,6 @@ export class RoleBot extends EventEmitter {
 
 				if (!message) {
 					config.selfAssign.handleRemovedMessage(messageReactionsConfig.messageId);
-					config.saveConfig();
 					return;
 				}
 
@@ -327,7 +319,6 @@ export class RoleBot extends EventEmitter {
 
 						if (!guildRole) {
 							config.selfAssign.handleRemovedRole(role.roleId);
-							config.saveConfig();
 							return;
 						}
 						

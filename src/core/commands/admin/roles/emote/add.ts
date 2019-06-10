@@ -102,7 +102,6 @@ export class AddEmoteCommand extends AdminCommand implements BaseCommandInterfac
 
 				reactMessage.react(emoteToReact).then(e => {
 					this.serverConfig.selfAssign.addEmote(categoryName, role.id, messageId, channelId, e.emoji.id ? e.emoji.identifier.toUpperCase() : e.emoji.name);
-					this.serverConfig.saveConfig();
 					this.sendMessage('Reaction role added');
 					this.deleteEmote(emoteToReact as Emoji);
 				}).catch(e => {
