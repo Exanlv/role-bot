@@ -34,7 +34,7 @@ class TestingBot {
 			process.exit();
 		});
 
-		this.roleBot = new RoleBot(readFileSync(`${rootDir}/tokens/main.txt`).toString(), rootDir);
+		this.roleBot = new RoleBot(readFileSync(`${rootDir}/tokens/main.txt`).toString(), this.rootDir);
 
 		this.roleBot.on('BotReady', () => {
 			console.log('Role Bot is ready');
@@ -47,8 +47,8 @@ class TestingBot {
 		const tests = [];
 
 		tests.push(new ActiveChannelsTest(this.client, this.testServer, this.testChannel));
-		// tests.push(new ModRolesTest(this.client, this.testServer, this.testChannel));
-		// tests.push(new PrefixTest(this.client, this.testServer, this.testChannel));
+		tests.push(new ModRolesTest(this.client, this.testServer, this.testChannel));
+		tests.push(new PrefixTest(this.client, this.testServer, this.testChannel));
 
 		for(let i = 0; i < tests.length; i++) {
 			const currentConfig = this.roleBot.configs[this.testServer.id].getRaw();
@@ -62,7 +62,7 @@ class TestingBot {
 
 			if (tests[i].cleanUp)
 				await tests[i].cleanUp();
-				
+
 			this.roleBot.configs[this.testServer.id].saveConfig(currentConfig);
 
 			await sleep(1500);
