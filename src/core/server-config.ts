@@ -8,7 +8,8 @@ export class ServerConfig {
 	public activeChannels: Array<string> = [];
 	public adminRoles: Array<string> = [];
 	public selfAssign: SelfAssign = new SelfAssign;
-	public confDir: string;
+	private confDir: string;
+	public logChannel: string;
 
 	constructor(id: string, dataDir: string) {
 		this.confDir = dataDir;
@@ -18,10 +19,11 @@ export class ServerConfig {
 			return;
 		} else {
 			const savedConfig = JSON.parse(readFileSync(`${this.confDir}/${this.serverId}.json`).toString());
-			this.prefix = savedConfig.prefix;
+			this.prefix = savedConfig.prefix || ';;';
 			this.activeChannels = savedConfig.activeChannels;
 			this.adminRoles = savedConfig.adminRoles;
 			this.selfAssign = new SelfAssign(savedConfig.selfAssign);
+			this.logChannel = savedConfig.logChannel;
 		}
 	}
 
@@ -30,7 +32,8 @@ export class ServerConfig {
 			'prefix' : this.prefix,
 			'activeChannels': this.activeChannels,
 			'adminRoles': this.adminRoles,
-			'selfAssign': this.selfAssign.raw()
+			'selfAssign': this.selfAssign.raw(),
+			'logChannel': this.logChannel
 		};
 	}
 
@@ -87,6 +90,11 @@ export class ServerConfig {
 	 */
 	public addActiveChannel(id: string): void {
 		this.activeChannels.push(id);
+		this.saveConfig();
+	}
+
+	public setLogChannel(channelId) {
+		this.logChannel = channelId;
 		this.saveConfig();
 	}
 

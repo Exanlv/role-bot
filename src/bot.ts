@@ -1,11 +1,10 @@
-import { Client, Message, Guild, GuildChannel, GuildMember, TextChannel } from 'discord.js';
+import { Client, Message, Guild, GuildChannel, TextChannel, RichEmbed } from 'discord.js';
 import { GlobalConfig } from './global-config';
 import { ServerConfig } from './core/server-config';
 import { ShortReact } from './shared/classes/short-react';
 import { CommandConfig } from './shared/classes/command-config';
 import { getCommandConfig } from './core/command-configs';
 import { EventEmitter } from 'events';
-import { MessageReactionsConfig } from './shared/classes/message-reactions-config';
 
 export class RoleBot extends EventEmitter {
 	private client: Client;
@@ -14,6 +13,7 @@ export class RoleBot extends EventEmitter {
 	private prefixes: {dev?: string, admin?: string} = {};
 	private developerIds: Array<string> = [];
 	private dataDir: string;
+	private color: string;
 
 	constructor(token) {
 		super();
@@ -27,6 +27,8 @@ export class RoleBot extends EventEmitter {
 		this.developerIds = GlobalConfig.developers;
 
 		this.dataDir = GlobalConfig.dataDir;
+
+		this.color = GlobalConfig.color;
 
 		this.handleOnReady();
 		this.handleOnError();
@@ -43,6 +45,7 @@ export class RoleBot extends EventEmitter {
 			this.handleOnRoleDelete();
 			this.handleOnRawMessageDelete();
 			this.handleOnGuildMemberAdd();
+			this.handleOnCommand();
 			this.emit('BotReady');
 		});
 	}
@@ -132,6 +135,8 @@ export class RoleBot extends EventEmitter {
 			const prefix = {dev: this.prefixes.dev, admin: this.prefixes.admin, public: config.prefix}[mode];
 			const command = rawMessage.replace(prefix, '');
 			const args = command.split(' ');
+
+			this.client.emit('command', message);
 
 			const commandConfig: CommandConfig = getCommandConfig(mode, args);
 
@@ -324,6 +329,31 @@ export class RoleBot extends EventEmitter {
 					}
 				});
 			});
+		})
+	}
+
+	private handleOnCommand() {
+		this.client.on('command', (message: Message) => {
+			const config = this.configs[message.guild.id];
+
+			if (config.logChannel) {
+				const logChannel = message.guild.channels.find(c => c.id === config.logChannel) as TextChannel;
+
+				if (!logChannel) {
+					config.setLogChannel(null);
+					return;
+				}
+
+				const embed = new RichEmbed()
+					.setColor(this.color)
+					.setAuthor(message.author.tag, message.author.avatarURL, message.url)
+					.addField(`#${(message.channel as TextChannel).name}`, message.cleanContent, true)
+					.addBlankField(true)
+					.setThumbnail('https://www.landviz.nl/host/logogrey-small.png')
+					.setTimestamp(new Date(message.createdTimestamp))
+				;
+				logChannel.send(embed);
+			}
 		})
 	}
 }

@@ -16,6 +16,28 @@ export const COMMANDCONFIGS: CommandConfigs = {
 			'help-command'
 		),
 		new CommandConfig(
+			['LOG-CHANNEL', 'LC'],
+			'ListLogChannelCommand',
+			'log-channel/list',
+			[
+				new CommandConfig(
+					['SET', 'S'],
+					'SetLogChannelCommand',
+					'log-channel/set'
+				),
+				new CommandConfig(
+					['LIST', 'L'],
+					'ListLogChannelCommand',
+					'log-channel/list'
+				),
+				new CommandConfig(
+					['REMOVE', 'R'],
+					'RemoveLogChannelCommand',
+					'log-channel/remove'
+				)
+			]
+		),
+		new CommandConfig(
 			['SELF-ASSIGN', 'SA'],
 			'ListRoleCommand',
 			'roles/role/list',
