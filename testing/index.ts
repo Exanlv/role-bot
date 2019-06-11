@@ -4,6 +4,9 @@ import { ModRolesTest } from './tests/mod-roles';
 import { RoleBot } from '../src/bot';
 import { PrefixTest } from './tests/prefix';
 import { readFileSync } from 'fs';
+import { LogChannelTest } from './tests/log-channel';
+import { SelfAssignCategoryTest } from './tests/selfassign-category';
+import { SelfAssignRolesTest } from './tests/selfassign-roles';
 
 export function sleep(ms: number) {
     return new Promise( resolve => setTimeout(resolve, ms) );
@@ -49,6 +52,9 @@ class TestingBot {
 		tests.push(new ActiveChannelsTest(this.client, this.testServer, this.testChannel));
 		tests.push(new ModRolesTest(this.client, this.testServer, this.testChannel));
 		tests.push(new PrefixTest(this.client, this.testServer, this.testChannel));
+		tests.push(new LogChannelTest(this.client, this.testServer, this.testChannel));
+		tests.push(new SelfAssignCategoryTest(this.client, this.testServer, this.testChannel));
+		tests.push(new SelfAssignRolesTest(this.client, this.testServer, this.testChannel));
 
 		for(let i = 0; i < tests.length; i++) {
 			const currentConfig = this.roleBot.configs[this.testServer.id].getRaw();

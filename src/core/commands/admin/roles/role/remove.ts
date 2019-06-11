@@ -3,19 +3,13 @@ import { BaseCommandInterface } from "../../../../base-command";
 import { firstLetterUppercase } from "../../../../functions";
 
 export class RemoveRoleCommand extends AdminCommand implements BaseCommandInterface {
-    public runCommand() {
+    public async runCommand() {
         this.loadInput();
 
-		const roleName = this.input.ROLE || this.input.R;
-		const categoryName = this.input.CATEGORY || this.input.C;
+		const roleName = this.input.ROLE || this.input.R || await this.getUserInput('``> enter role name``');
 
-		if (!roleName || !categoryName) {
-			this.sendMessage(`Could not remove self-assignable role; this command requires inputs, \`\`role:{${roleName ? 'true' : 'false'}}\`\` \`\`category:{${categoryName ? 'true' : 'false'}}\`\``);
-			return;
-		}
-
-		if (!this.serverConfig.selfAssign.categoryExists(categoryName)) {
-			this.sendMessage(`Could not remove self-assignable role; category \`\`${firstLetterUppercase(categoryName)}\`\` does not exist`);
+		if (!roleName) {
+			this.sendMessage('Could not remove self-assignable role; no role name was given');
 			return;
 		}
 
@@ -23,6 +17,18 @@ export class RemoveRoleCommand extends AdminCommand implements BaseCommandInterf
 
 		if (!role) {
 			this.sendMessage(`Could not remove self-assignable role; role \`\`${firstLetterUppercase(roleName)}\`\` does not exist`);
+			return;
+		}
+
+		const categoryName = this.input.CATEGORY || this.input.C || await this.getUserInput('``> enter category name``');
+
+		if (!categoryName) {
+			this.sendMessage(`Could not remove self-assignable role; no category name was given`);
+			return;
+		}
+
+		if (!this.serverConfig.selfAssign.categoryExists(categoryName)) {
+			this.sendMessage(`Could not remove self-assignable role; category \`\`${firstLetterUppercase(categoryName)}\`\` does not exist`);
 			return;
 		}
 

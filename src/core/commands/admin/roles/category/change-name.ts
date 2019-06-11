@@ -13,6 +13,11 @@ export class ChangeCategoryNameCommand extends AdminCommand implements BaseComma
 			return;
 		}
 
+		if (!this.serverConfig.selfAssign.categoryExists(oldName)) {
+			this.sendMessage(`Could not change category name; category \`\`${firstLetterUppercase(oldName)}\`\` does not exist`);
+			return;
+		}
+
 		const newName = this.input.NEWNAME || this.input.NN || await this.getUserInput('``> enter new name for category``');
 
 		if (!newName) {
@@ -20,13 +25,8 @@ export class ChangeCategoryNameCommand extends AdminCommand implements BaseComma
 			return;
 		}
 
-		if (newName.lenght > 50) {
+		if (newName.length > 50) {
 			this.sendMessage(`Could not change category name; given category name is too long, max. 50 characters`);
-			return;
-		}
-
-		if (!this.serverConfig.selfAssign.categoryExists(oldName)) {
-			this.sendMessage(`Could not change category name; category \`\`${firstLetterUppercase(oldName)}\`\` does not exist`);
 			return;
 		}
 

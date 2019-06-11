@@ -9,7 +9,7 @@ export class AddRoleCommand extends AdminCommand implements BaseCommandInterface
 		const roleName = this.input.ROLE || this.input.R || await this.getUserInput('``> enter role name``');
 
 		if (!roleName) {
-			this.sendMessage(`Could not add self-assignable role; no role was given`);
+			this.sendMessage('Could not add self-assignable role; no role was given');
 			return;
 		}
 
@@ -23,7 +23,7 @@ export class AddRoleCommand extends AdminCommand implements BaseCommandInterface
 		const categoryName = this.input.CATEGORY || this.input.C || await this.getUserInput('``> enter category name``');
 
 		if (!categoryName) {
-			this.sendMessage(`Could not add self-assignable role; no category was given`);
+			this.sendMessage('Could not add self-assignable role; no category was given');
 			return;
 		}
 

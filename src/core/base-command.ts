@@ -130,7 +130,12 @@ export class BaseCommand {
 	public async getUserInput(message: string): Promise<string|false> {
 		this.sendMessage(message);
 		const reply = await this.message.channel.awaitMessages(m => m.author.id === this.message.author.id, {maxMatches: 1, time: 20000});
-		return reply.first() ? reply.first().content.toUpperCase() : false;
+		
+		if (reply.first() && reply.first().content.toUpperCase() !== '~~EXIT') {
+			return reply.first().content.toUpperCase();
+		}
+
+		return false;
 	}
 }
 
