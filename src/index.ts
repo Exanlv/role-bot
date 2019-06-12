@@ -2,7 +2,7 @@ import { RoleBot } from "./bot";
 import { readFileSync, existsSync, mkdirSync } from "fs";
 
 const rootDir = (() => {
-	let dir = __dirname.split('\\');
+	let dir = __dirname.replace(/\\/g, '/').split('/');
 	dir.splice(dir.length - 1, 1);
 	return dir.join('/');
 })();
