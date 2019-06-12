@@ -54,6 +54,11 @@ export class ListEmoteCommand extends AdminCommand implements BaseCommandInterfa
 							}
 						}
 
+						if (list.values.length < 1) {
+							this.sendMessage('This role does not have any reacts set up');
+							return;
+						}
+
 						this.sendList(list, false);
 						return;
 					}
@@ -66,6 +71,11 @@ export class ListEmoteCommand extends AdminCommand implements BaseCommandInterfa
 			}
 		} else {
 			categorys = this.serverConfig.selfAssign.getCategories();
+		}
+
+		if (categorys.length === 0) {
+			this.sendMessage('No roles/categorys are currently set up');
+			return;
 		}
 
 		const list = new List;

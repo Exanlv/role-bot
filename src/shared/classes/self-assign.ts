@@ -170,7 +170,6 @@ export class SelfAssign extends EventEmitter {
 					if(index > this.roles[categoryIndex].roles[i].emoteReacts.length) {
 						return;
 					}
-
 					let id = `${this.roles[categoryIndex].roles[i].emoteReacts[index - 1].messageId}|${this.roles[categoryIndex].roles[i].emoteReacts[index - 1].channelId}`
 					if (!configToRemove[id]) {
 						configToRemove[id] = [];

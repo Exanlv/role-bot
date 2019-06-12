@@ -26,11 +26,11 @@ export class BaseTest {
 			this.failedTest(testCode);
 	}
 
-	private completedTest(testName: string) {
+	protected completedTest(testName: string) {
 		console.log(`'${this.name}': Passed test '${testName}'`);
 	}
 
-	private failedTest(testName: string) {
+	protected failedTest(testName: string) {
 		throw `'${this.name}': FAILED TEST '${testName}'`;
 	}
 
@@ -84,7 +84,6 @@ export class BaseTest {
 
 		for (let i = 0; i < output.length; i++) {
 			if ((output[i].listTitle && (options.caseSensitive ? output[i].listTitle !== message.embeds[0].fields[i].name : output[i].listTitle.toUpperCase() !== message.embeds[0].fields[i].name.toUpperCase())) || (output[i].listValue && (options.caseSensitive ? output[i].listValue !== message.embeds[0].fields[i].name : output[i].listValue.toUpperCase() !== message.embeds[0].fields[i].value.toUpperCase()))) {
-				// console.log(i, output[i], )
 				this.failedTest(testName);
 				return;
 			}

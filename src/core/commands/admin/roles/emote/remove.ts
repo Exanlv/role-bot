@@ -20,7 +20,6 @@ export class RemoveEmoteCommand extends AdminCommand implements BaseCommandInter
 		}
 
 		const role = this.input.ROLE || this.input.R || await this.getUserInput('``> enter role name``');
-		const toRemove = (this.input.REMOVE || this.input.RM || await this.getUserInput('``> enter indexes to remove``')).split(' ') as Array<number>;
 
 		if (!role) {
 			this.sendMessage('Could not remove reaction role assignment; no role was given');
@@ -30,13 +29,22 @@ export class RemoveEmoteCommand extends AdminCommand implements BaseCommandInter
 		const guildRole = this.message.guild.roles.find(r => r.name.toUpperCase() === role);
 
 		if (!guildRole) {
-			this.sendMessage(`Could not remove reaction role assignment; role \`\`${role}\`\` does not exist`);
+			this.sendMessage(`Could not remove reaction role assignment; role \`\`${firstLetterUppercase(role)}\`\` does not exist`);
 			return;
 		}
 
 		if (!this.serverConfig.selfAssign.roleIsInCategory(category, guildRole.id)) {
 			this.sendMessage(`Could not remove reaction role assignment; role \`\`${guildRole.name}\`\` is not in category \`\`${firstLetterUppercase(category)}\`\``);
 			return;
+		}
+
+		const userInputToRemove = ((this.input.REMOVE || this.input.RM || await this.getUserInput('``> enter indexes to remove``') as string) || '').split(' ') as Array<number|string>;
+		const toRemove: Array<number> = [];
+		// console.log(toRemove);
+		for (let i = 0; i < userInputToRemove.length; i++) {
+			if (userInputToRemove[i] !== '' && Number(userInputToRemove[i]) !== NaN) {
+				toRemove.push(Number(userInputToRemove[i]));
+			}
 		}
 
 		if (!toRemove.length) {
@@ -47,20 +55,20 @@ export class RemoveEmoteCommand extends AdminCommand implements BaseCommandInter
 		const messageReactionsToRemove = this.serverConfig.selfAssign.removeEmotes(category, guildRole.id, toRemove);
 
 
-		messageReactionsToRemove.forEach(async conf => {
+		await messageReactionsToRemove.forEach(async conf => {
 			const channel = this.message.guild.channels.find(c => c.id === conf.channelId) as TextChannel;
 			const message = await channel.fetchMessage(conf.messageId);
 
-			conf.reactions.forEach(reaction => {
+			await conf.reactions.forEach(async reaction => {
 				const messageReaction = message.reactions.find(e => (e.emoji.id ? e.emoji.identifier.toUpperCase() : e.emoji.name) === reaction.emoteIdentifier);
 
 				if (messageReaction) {
-					messageReaction.remove();
+					await messageReaction.remove();
 				}
 			});
 		});
 
 
-		this.sendMessage(`Succesfully removed reacts \`\`${toRemove.join(', ')}\`\` from \`\`${guildRole.name}\`\` in category \`\`${firstLetterUppercase(category)}\`\``);
+		this.sendMessage(`Succesfully removed react(s) \`\`${toRemove.join(', ')}\`\` from \`\`${guildRole.name}\`\` in category \`\`${firstLetterUppercase(category)}\`\``);
     }
 }

@@ -32,7 +32,7 @@ export class AddEmoteCommand extends AdminCommand implements BaseCommandInterfac
 		}
 
 		if (!this.serverConfig.selfAssign.categoryExists(categoryName)) {
-			this.sendMessage(`Could not add reaction role assignment; category \`\`${categoryName}\`\` does not exist`);
+			this.sendMessage(`Could not add reaction role assignment; category \`\`${firstLetterUppercase(categoryName)}\`\` does not exist`);
 			return;
 		}
 
@@ -45,13 +45,8 @@ export class AddEmoteCommand extends AdminCommand implements BaseCommandInterfac
 		if(!messageLink) messageLink = await this.getUserInput('``> enter message link``') || '';
 		const messageData = messageLink.replace('HTTPS://DISCORDAPP.COM/CHANNELS/', '').split('/');
 
-		if (!messageData) {
-			this.sendMessage('Could not add reaction role assignment; no message link was given');
-			return;
-		}
-
-		if (messageData.length !== 3) {
-			this.sendMessage('Could not add reaction role assignment; invalid message url');
+		if (!messageData || messageData.length !== 3) {
+			this.sendMessage('Could not add reaction role assignment; no valid message link was given');
 			return;
 		}
 
@@ -73,7 +68,7 @@ export class AddEmoteCommand extends AdminCommand implements BaseCommandInterfac
 
 		const messageId = messageData[2];
 
-		const reactMessage = await channel.fetchMessage(messageId);
+		const reactMessage = await channel.fetchMessage(messageId).catch(err => {});
 
 		if (!reactMessage) {
 			this.sendMessage('Could not add reaction role assignment; invalid message');
@@ -87,7 +82,12 @@ export class AddEmoteCommand extends AdminCommand implements BaseCommandInterfac
 
 		this.message.channel.send('Please add the react for the role to this message').then(message => {
 			message = message as Message;
-			message.awaitReactions((reaction, user) => user.id === this.message.author.id, {max: 1, time: 60000}).then(async collection => {
+			message.awaitReactions((reaction, user) => user.id === this.message.author.id, {max: 1, time: 30000}).then(async collection => {
+				if(collection.size < 1) {
+					this.sendMessage('Could not add reaction role assignment; no react was given');
+					return;
+				}
+				
 				const reactedEmote = collection.first().emoji;
 				let emoteToReact = reactedEmote;
 
@@ -103,10 +103,12 @@ export class AddEmoteCommand extends AdminCommand implements BaseCommandInterfac
 				reactMessage.react(emoteToReact).then(e => {
 					this.serverConfig.selfAssign.addEmote(categoryName, role.id, messageId, channelId, e.emoji.id ? e.emoji.identifier.toUpperCase() : e.emoji.name);
 					this.sendMessage('Reaction role added');
-					this.deleteEmote(emoteToReact as Emoji);
+					if (reactedEmote !== emoteToReact)
+						this.deleteEmote(emoteToReact as Emoji);
 				}).catch(e => {
 					this.handleError(e, 'AddReact');
-					this.deleteEmote(emoteToReact as Emoji);
+					if (reactedEmote !== emoteToReact)
+						this.deleteEmote(emoteToReact as Emoji);
 				});
 			});
 		});
@@ -126,6 +128,8 @@ export class AddEmoteCommand extends AdminCommand implements BaseCommandInterfac
 
 	public async deleteEmote(emoji: Emoji): Promise<void> {
 		const botGuild = this.client.guilds.find(g => g.id === GlobalConfig.devServer);
-		await botGuild.deleteEmoji(emoji);
+		if (emoji.guild) {
+			await botGuild.deleteEmoji(emoji).catch(e => {});
+		}
 	}
 }
