@@ -1,1 +1,1 @@
-tsc --outDir .\build\src\ && copy .\package.json .\build\package.json
+tsc --outDir .\build\
