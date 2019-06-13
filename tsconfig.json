@@ -5,7 +5,7 @@
 		"module": "commonjs",
 	},
 	"include": [
-		"src/**/*"
+		"src/**/*", "core/bot.ts"
 	],
 	"exclude": [
 		"node_modules/",

@@ -1,5 +1,4 @@
 import { existsSync, readFileSync, writeFileSync, unlink } from 'fs';
-import { GlobalConfig } from "../global-config";
 import { SelfAssign } from "../shared/classes/self-assign";
 
 export class ServerConfig {

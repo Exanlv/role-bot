@@ -1,22 +1,24 @@
 import { Message, RichEmbed, Client, TextChannel, DiscordAPIError } from 'discord.js';
 import { ServerConfig } from './server-config';
-import { GlobalConfig } from '../global-config';
 import { List } from '../shared/classes/list';
+import { GlobalConfig } from '../shared/classes/global-config';
 
 export class BaseCommand {
 	public serverConfig: ServerConfig;
 	public message: Message;
 	public command: string;
 	public args: Array<string>;
-	public input: any = {};
+	public input: {[key: string]: string} = {};
 	public client: Client;
+	public globalConfig: GlobalConfig;
 
-	constructor(message: Message, serverConfig: ServerConfig, command: string, args: Array<string>, client: Client) {
+	constructor(message: Message, serverConfig: ServerConfig, command: string, args: Array<string>, client: Client, globalConfig: GlobalConfig) {
 		this.serverConfig = serverConfig;
 		this.message = message;
 		this.command = command;
 		this.args = args;
 		this.client = client;
+		this.globalConfig = globalConfig;
 	}
 
 	protected loadInput(trim = true): void {
@@ -95,7 +97,7 @@ export class BaseCommand {
 
 				const sendActiveChannelReminder = ['SendList', 'SendMessage'];
 				if (sendActiveChannelReminder.includes(id))
-					message += `If you don't want the bot to be active in this channel, please use \`\`${GlobalConfig.adminPrefix}active-channels\`\` to set up active channels.`;
+					message += `If you don't want the bot to be active in this channel, please use \`\`${this.globalConfig.prefixes.admin}active-channels\`\` to set up active channels.`;
 
 				this.message.guild.owner.send(message)
 					.catch(e => {})
@@ -104,13 +106,7 @@ export class BaseCommand {
 			}
 		}
 
-		const guild = this.client.guilds.find(server => server.id === GlobalConfig.devServer);
-
-		if (!guild) {
-			return;
-		}
-
-		const errorChannel = guild.channels.find(c => c.name === 'errors') as TextChannel;
+		const errorChannel = this.globalConfig.devServer.channels.find(c => c.name === 'errors') as TextChannel;
 
 		if (!errorChannel) {
 			return;

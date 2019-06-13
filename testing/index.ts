@@ -1,13 +1,14 @@
 import { Client, TextChannel, Guild } from 'discord.js';
 import { ActiveChannelsTest } from './tests/active-channels';
 import { ModRolesTest } from './tests/mod-roles';
-import { RoleBot } from '../src/bot';
+import { getRolebot } from '../core/get-bots';
 import { PrefixTest } from './tests/prefix';
 import { readFileSync } from 'fs';
 import { LogChannelTest } from './tests/log-channel';
 import { SelfAssignCategoryTest } from './tests/selfassign-category';
 import { SelfAssignRolesTest } from './tests/selfassign-roles';
 import { SelfAssignEmotesTest } from './tests/selfassign-emotes';
+import { RoleBot } from '../core/bot';
 
 export function sleep(ms: number) {
     return new Promise( resolve => setTimeout(resolve, ms) );
@@ -38,7 +39,7 @@ class TestingBot {
 			process.exit();
 		});
 
-		this.roleBot = new RoleBot(readFileSync(`${rootDir}/tokens/main.txt`).toString(), this.rootDir);
+		this.roleBot = getRolebot();
 
 		this.roleBot.on('BotReady', () => {
 			console.log('Role Bot is ready');
@@ -51,12 +52,12 @@ class TestingBot {
 		const tests = [];
 
 		tests.push(new ActiveChannelsTest(this.client, this.testServer, this.testChannel));
-		tests.push(new ModRolesTest(this.client, this.testServer, this.testChannel));
-		tests.push(new PrefixTest(this.client, this.testServer, this.testChannel));
-		tests.push(new LogChannelTest(this.client, this.testServer, this.testChannel));
-		tests.push(new SelfAssignCategoryTest(this.client, this.testServer, this.testChannel));
-		tests.push(new SelfAssignRolesTest(this.client, this.testServer, this.testChannel));
-		tests.push(new SelfAssignEmotesTest(this.client, this.testServer, this.testChannel));
+		// tests.push(new ModRolesTest(this.client, this.testServer, this.testChannel));
+		// tests.push(new PrefixTest(this.client, this.testServer, this.testChannel));
+		// tests.push(new LogChannelTest(this.client, this.testServer, this.testChannel));
+		// tests.push(new SelfAssignCategoryTest(this.client, this.testServer, this.testChannel));
+		// tests.push(new SelfAssignRolesTest(this.client, this.testServer, this.testChannel));
+		// tests.push(new SelfAssignEmotesTest(this.client, this.testServer, this.testChannel));
 
 		for(let i = 0; i < tests.length; i++) {
 			const currentConfig = this.roleBot.configs[this.testServer.id].getRaw();
@@ -84,4 +85,4 @@ const rootDir = (() => {
 	return dir.join('/');
 })();
 
-new TestingBot(readFileSync(`${rootDir}/tokens/testing.txt`).toString(), rootDir);
+new TestingBot(readFileSync(`${rootDir}/settings/tokens/testing.txt`).toString(), rootDir);
