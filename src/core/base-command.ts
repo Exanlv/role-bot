@@ -44,7 +44,7 @@ export class BaseCommand {
 
 	public sendList(list: List, includeEmpty: boolean = true): void {
 		const embed = new RichEmbed()
-			.setColor(list.color)
+			.setColor(list.color || this.globalConfig.accentColor)
 		;
 
 		if (list.title) {

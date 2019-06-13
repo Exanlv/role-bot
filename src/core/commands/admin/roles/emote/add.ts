@@ -1,7 +1,6 @@
 import { BaseCommandInterface } from "../../../../base-command";
 import { TextChannel, Message, Emoji } from "discord.js";
 import { firstLetterUppercase } from "../../../../functions";
-import { GlobalConfig } from "../../../../../global-config";
 
 import * as fetch from 'node-fetch';
 import { AdminCommand } from "../../_admin";
@@ -115,11 +114,9 @@ export class AddEmoteCommand extends AdminCommand implements BaseCommandInterfac
 	}
 
 	public async uploadEmote(emoji: Emoji): Promise<Emoji|void> {
-		const botGuild = this.client.guilds.find(g => g.id === GlobalConfig.devServer);
-
 		let gifExists = (await fetch(`https://cdn.discordapp.com/emojis/${emoji.id}.gif`, {method: 'HEAD'})).status === 200;
 		const url = `https://cdn.discordapp.com/emojis/${emoji.id}.${gifExists ? 'gif' : 'png'}`; 
-		const emote = await botGuild.createEmoji(url, emoji.name).catch(e => {
+		const emote = await this.globalConfig.devServer.createEmoji(url, emoji.name).catch(e => {
 			this.handleError(e, 'UploadEmote');
 		});
 
@@ -127,9 +124,8 @@ export class AddEmoteCommand extends AdminCommand implements BaseCommandInterfac
 	}
 
 	public async deleteEmote(emoji: Emoji): Promise<void> {
-		const botGuild = this.client.guilds.find(g => g.id === GlobalConfig.devServer);
 		if (emoji.guild) {
-			await botGuild.deleteEmoji(emoji).catch(e => {});
+			await this.globalConfig.devServer.deleteEmoji(emoji).catch(e => {});
 		}
 	}
 }

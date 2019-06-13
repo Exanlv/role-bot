@@ -24,12 +24,12 @@ export const mainBotFiles: Array<FileConfig> = [
 	},
 	{
 		path: '/settings/prefix-admin.txt',
-		defaultValue: '!rb',
+		defaultValue: '!RB ',
 		required: true
 	},
 	{
 		path: '/settings/accent-color.txt',
-		defaultValue: '$d',
+		defaultValue: '$D ',
 		required: true
 	},
 	{

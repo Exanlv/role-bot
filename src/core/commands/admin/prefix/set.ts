@@ -1,6 +1,5 @@
 import { AdminCommand } from "../_admin";
 import { BaseCommandInterface } from "../../../base-command";
-import { GlobalConfig } from "../../../../global-config";
 
 export class SetPrefixCommand extends AdminCommand implements BaseCommandInterface {
 	public runCommand() {
@@ -13,7 +12,7 @@ export class SetPrefixCommand extends AdminCommand implements BaseCommandInterfa
 			return;
 		}
 
-		if (prefix === GlobalConfig.adminPrefix || prefix === GlobalConfig.developerPrefix) {
+		if (prefix === this.globalConfig.prefixes.admin || prefix === this.globalConfig.prefixes.dev) {
 			this.sendMessage('Could not set prefix; this prefix can not be used');
 			return;
 		}

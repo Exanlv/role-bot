@@ -1,5 +1,4 @@
 import { BaseTest, UnitTest } from "../base-test";
-import { GlobalConfig } from "../../src/global-config";
 
 export class PrefixTest extends BaseTest implements UnitTest {
 	public name: string = 'Prefix';
@@ -36,7 +35,7 @@ export class PrefixTest extends BaseTest implements UnitTest {
 		 * Set prefix to admin prefix
 		 */
 		await this.simpleTest(
-			`!rbt p s p:{${GlobalConfig.adminPrefix}}`,
+			`!rbt p s p:{${this.roleBot.globalConfig.prefixes.admin}}`,
 			'Could not set prefix; this prefix can not be used',
 			'Set prefix to admin prefix'
 		);
@@ -45,7 +44,7 @@ export class PrefixTest extends BaseTest implements UnitTest {
 		 * Set prefix to developer prefix
 		 */
 		await this.simpleTest(
-			`!rbt p s p:{${GlobalConfig.developerPrefix}}`,
+			`!rbt p s p:{${this.roleBot.globalConfig.prefixes.dev}}`,
 			'Could not set prefix; this prefix can not be used',
 			'Set prefix to dev prefix'
 		);

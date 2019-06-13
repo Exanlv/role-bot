@@ -150,7 +150,7 @@ export class RoleBot extends EventEmitter {
 				return;
 			}
 
-			const classFile = await import(`./core/commands/${mode}/${commandConfig.filePath}`).catch(console.error);
+			const classFile = await import(`${this.rootDir}/src/core/commands/${mode}/${commandConfig.filePath}`).catch(console.error);
 			if (!classFile)
 				return;
 

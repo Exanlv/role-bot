@@ -2,6 +2,7 @@ import { Guild, Client, TextChannel, Message, MessageEmbed, RichEmbed } from "di
 import { RunCommandOptions } from "./classes/runcommand-options";
 import { ServerConfig } from "../src/core/server-config";
 import { OutputList } from "./classes/outputList";
+import { RoleBot } from "../core/bot";
 
 export class BaseTest {
 	protected name: string;
@@ -13,10 +14,13 @@ export class BaseTest {
 	protected serverConfig: ServerConfig;
 	protected rawConfig: any;
 
-	constructor(client: Client, testServer: Guild, testChannel: TextChannel) {
+	public roleBot: RoleBot;
+
+	constructor(client: Client, testServer: Guild, testChannel: TextChannel, roleBot: RoleBot) {
 		this.client = client;
 		this.testServer = testServer;
 		this.testChannel = testChannel;
+		this.roleBot = roleBot;
 	}
 
 	protected resultTest(testCode: string, status: boolean) {

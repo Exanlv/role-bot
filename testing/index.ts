@@ -51,13 +51,13 @@ class TestingBot {
 	private async runTests() {
 		const tests = [];
 
-		tests.push(new ActiveChannelsTest(this.client, this.testServer, this.testChannel));
-		// tests.push(new ModRolesTest(this.client, this.testServer, this.testChannel));
-		// tests.push(new PrefixTest(this.client, this.testServer, this.testChannel));
-		// tests.push(new LogChannelTest(this.client, this.testServer, this.testChannel));
-		// tests.push(new SelfAssignCategoryTest(this.client, this.testServer, this.testChannel));
-		// tests.push(new SelfAssignRolesTest(this.client, this.testServer, this.testChannel));
-		// tests.push(new SelfAssignEmotesTest(this.client, this.testServer, this.testChannel));
+		tests.push(new ActiveChannelsTest(this.client, this.testServer, this.testChannel, this.roleBot));
+		tests.push(new ModRolesTest(this.client, this.testServer, this.testChannel, this.roleBot));
+		tests.push(new PrefixTest(this.client, this.testServer, this.testChannel, this.roleBot));
+		tests.push(new LogChannelTest(this.client, this.testServer, this.testChannel, this.roleBot));
+		tests.push(new SelfAssignCategoryTest(this.client, this.testServer, this.testChannel, this.roleBot));
+		tests.push(new SelfAssignRolesTest(this.client, this.testServer, this.testChannel, this.roleBot));
+		tests.push(new SelfAssignEmotesTest(this.client, this.testServer, this.testChannel, this.roleBot));
 
 		for(let i = 0; i < tests.length; i++) {
 			const currentConfig = this.roleBot.configs[this.testServer.id].getRaw();
