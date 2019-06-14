@@ -212,7 +212,7 @@ export class SelfAssignEmotesTest extends BaseTest implements UnitTest {
 
 		if (respondedMessage && respondedMessage.content === 'Please add the react for the role to this message') {
 			respondedMessage.react(this.reacts[0]);
-			const secondResponse = await this.testChannel.awaitMessages((message: Message) => message.member.id === '573067073761312787', {max: 1, time: 15000}) // TODO: Dynamically get ID
+			const secondResponse = await this.testChannel.awaitMessages((message: Message) => message.member.id === this.roleBot.client.user.id, {max: 1, time: 15000})
 
 			if (secondResponse && secondResponse.size > 0) {
 				const res = secondResponse.first() as Message;

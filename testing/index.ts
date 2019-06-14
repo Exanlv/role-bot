@@ -32,8 +32,12 @@ class TestingBot {
 		this.client.on('ready', async () => {
 			console.log('Bot logged in');
 
-			this.testServer = this.client.guilds.find(g => g.id === '575395886117421083');
-			this.testChannel = this.testServer.channels.find(c => c.id === '577119668448526359') as TextChannel;
+			this.testServer = this.roleBot.globalConfig.devServer;
+			this.testChannel = this.testServer.channels.find(c => c.name.toUpperCase() === 'TEST') as TextChannel;
+
+			if (!this.testChannel) {
+				throw(`No channel called 'test' on '${this.testServer.name}'`)
+			}
 
 			await this.runTests();
 			process.exit();

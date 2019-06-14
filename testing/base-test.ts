@@ -44,7 +44,7 @@ export class BaseTest {
 		const expectedResponse = options.response;
 
 		channel.send(command)
-		const message = (await channel.awaitMessages(m => m.author.id === '573067073761312787', {maxMatches: 1, time: time})).first() as Message || null;
+		const message = (await channel.awaitMessages(m => m.author.id === this.roleBot.client.user.id, {maxMatches: 1, time: time})).first() as Message || null;
 
 		if (!message)
 			return false;
