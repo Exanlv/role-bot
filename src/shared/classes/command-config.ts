@@ -1,13 +1,11 @@
 export class CommandConfig {
 	public key: Array<string>;
-	public className: string;
-	public filePath: string;
+	public commandClass: any;
 	public subCommands?: Array<CommandConfig>;
 
-	constructor(key: Array<string>, className: string, filePath: string, subCommands: Array<CommandConfig> = null) {
+	constructor(key: Array<string>, commandClass: any, subCommands: Array<CommandConfig> = null) {
 		this.key = key;
-		this.className = className;
-		this.filePath = filePath;
+		this.commandClass = commandClass;
 		this.subCommands = subCommands;
 	}
 

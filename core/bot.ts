@@ -150,17 +150,7 @@ export class RoleBot extends EventEmitter {
 				return;
 			}
 
-			const classFile = await import(`${this.rootDir}/src/core/commands/${mode}/${commandConfig.filePath}`).catch(console.error);
-			if (!classFile)
-				return;
-
-			if (!classFile[commandConfig.className]) {
-				console.error(`Class ${commandConfig.className} does not exist in ${mode}/${commandConfig.filePath}.ts`);
-				return;
-			}
-
-			const commandInstance = new classFile[commandConfig.className](message, config, command, args, this.client, this.globalConfig);
-			commandInstance.runCommand();
+			new commandConfig.commandClass(message, config, command, args, this.client, this.globalConfig).runCommand();
 		});
 	}
 

@@ -1,7 +1,6 @@
-import { PublicCommand } from "./_public";
-import { BaseCommandInterface } from "../../base-command";
+import { BaseCommandInterface, BaseCommand } from "../../base-command";
 
-export class HelpCommand extends PublicCommand implements BaseCommandInterface {
+export class PublicHelpCommand extends BaseCommand implements BaseCommandInterface {
 	public runCommand() {
 		let message = '```';
 		message += `${this.serverConfig.prefix}roles - get a list of all available roles\n`;
