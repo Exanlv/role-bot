@@ -1,9 +1,8 @@
-import { AdminCommand } from "../_admin";
-import { BaseCommandInterface } from "../../../base-command";
+import { BaseCommandInterface, BaseCommand } from "../../../base-command";
 import { ListValue } from "../../../../shared/classes/list-value";
 import { List } from "../../../../shared/classes/list";
 
-export class ListActiveChannelCommand extends AdminCommand implements BaseCommandInterface {
+export class ListActiveChannelCommand extends BaseCommand implements BaseCommandInterface {
 	public runCommand() {
 		const listValue = new ListValue;
 		listValue.title = 'Active Channels';

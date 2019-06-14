@@ -1,8 +1,7 @@
-import { AdminCommand } from "../../_admin";
-import { BaseCommandInterface } from "../../../../base-command";
+import { BaseCommandInterface, BaseCommand } from "../../../../base-command";
 import { firstLetterUppercase } from "../../../../functions";
 
-export class RemoveCategoryCommand extends AdminCommand implements BaseCommandInterface {
+export class RemoveCategoryCommand extends BaseCommand implements BaseCommandInterface {
     public async runCommand() {
         const categoryName = this.args.join(' ') || await this.getUserInput('``> enter the name of the category you want to delete``');
 

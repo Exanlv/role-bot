@@ -32,7 +32,7 @@ class TestingBot {
 		this.client.on('ready', async () => {
 			console.log('Bot logged in');
 
-			this.testServer = this.roleBot.globalConfig.devServer;
+			this.testServer = this.client.guilds.find(g => g.id === this.roleBot.globalConfig.devServerId);
 			this.testChannel = this.testServer.channels.find(c => c.name.toUpperCase() === 'TEST') as TextChannel;
 
 			if (!this.testChannel) {

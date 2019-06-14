@@ -1,10 +1,9 @@
-import { AdminCommand } from "../../_admin";
-import { BaseCommandInterface } from "../../../../base-command";
+import { BaseCommandInterface, BaseCommand } from "../../../../base-command";
 import { List } from "../../../../../shared/classes/list";
 import { ListValue } from "../../../../../shared/classes/list-value";
 import { firstLetterUppercase } from "../../../../functions";
 
-export class ListCategoryCommand extends AdminCommand implements BaseCommandInterface {
+export class ListCategoryCommand extends BaseCommand implements BaseCommandInterface {
     public runCommand() {
         const categorys = this.serverConfig.selfAssign.raw();
 		const listValue = new ListValue;

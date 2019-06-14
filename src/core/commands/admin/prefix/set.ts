@@ -1,7 +1,6 @@
-import { AdminCommand } from "../_admin";
-import { BaseCommandInterface } from "../../../base-command";
+import { BaseCommandInterface, BaseCommand } from "../../../base-command";
 
-export class SetPrefixCommand extends AdminCommand implements BaseCommandInterface {
+export class SetPrefixCommand extends BaseCommand implements BaseCommandInterface {
 	public runCommand() {
 		this.loadInput(false);
 

@@ -1,7 +1,6 @@
-import { AdminCommand } from "../_admin";
-import { BaseCommandInterface } from "../../../base-command";
+import { BaseCommandInterface, BaseCommand } from "../../../base-command";
 
-export class RemoveLogChannelCommand extends AdminCommand implements BaseCommandInterface {
+export class RemoveLogChannelCommand extends BaseCommand implements BaseCommandInterface {
 	runCommand() {
 		const logChannel = this.serverConfig.logChannel;
 		this.serverConfig.setLogChannel(null);

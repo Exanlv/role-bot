@@ -1,8 +1,7 @@
-import { PublicCommand } from "../_public";
-import { BaseCommandInterface } from "../../../base-command";
+import { BaseCommandInterface, BaseCommand } from "../../../base-command";
 import { firstLetterUppercase } from "../../../functions";
 
-export class GetRoleCommand extends PublicCommand implements BaseCommandInterface {
+export class GetRoleCommand extends BaseCommand implements BaseCommandInterface {
 	runCommand() {
 		const roleName = this.args.join(' ');
 

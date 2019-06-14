@@ -1,8 +1,7 @@
-import { AdminCommand } from "../_admin";
-import { BaseCommandInterface } from "../../../base-command";
+import { BaseCommandInterface, BaseCommand } from "../../../base-command";
 import { firstLetterUppercase } from "../../../functions";
 
-export class AddModRoleCommand extends AdminCommand implements BaseCommandInterface {
+export class AddModRoleCommand extends BaseCommand implements BaseCommandInterface {
 	public async runCommand() {
 		const roleName = this.args.join(' ') || await this.getUserInput('``> enter role name``');
 

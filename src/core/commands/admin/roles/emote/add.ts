@@ -1,11 +1,10 @@
-import { BaseCommandInterface } from "../../../../base-command";
+import { BaseCommandInterface, BaseCommand } from "../../../../base-command";
 import { TextChannel, Message, Emoji } from "discord.js";
 import { firstLetterUppercase } from "../../../../functions";
 
 import * as fetch from 'node-fetch';
-import { AdminCommand } from "../../_admin";
 
-export class AddEmoteCommand extends AdminCommand implements BaseCommandInterface {
+export class AddEmoteCommand extends BaseCommand implements BaseCommandInterface {
     public async runCommand() {
 		this.loadInput();
 		

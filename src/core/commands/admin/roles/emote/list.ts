@@ -1,11 +1,10 @@
-import { AdminCommand } from "../../_admin";
-import { BaseCommandInterface } from "../../../../base-command";
+import { BaseCommandInterface, BaseCommand } from "../../../../base-command";
 import { List } from "../../../../../shared/classes/list";
 import { ListValue } from "../../../../../shared/classes/list-value";
 import { firstLetterUppercase } from "../../../../functions";
 import { TextChannel } from "discord.js";
 
-export class ListEmoteCommand extends AdminCommand implements BaseCommandInterface {
+export class ListEmoteCommand extends BaseCommand implements BaseCommandInterface {
     public async runCommand() {
 		let categorys;
         if (this.args.length) {

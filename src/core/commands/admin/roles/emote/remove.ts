@@ -1,9 +1,8 @@
-import { AdminCommand } from "../../_admin";
-import { BaseCommandInterface } from "../../../../base-command";
+import { BaseCommandInterface, BaseCommand } from "../../../../base-command";
 import { firstLetterUppercase } from "../../../../functions";
 import { TextChannel } from "discord.js";
 
-export class RemoveEmoteCommand extends AdminCommand implements BaseCommandInterface {
+export class RemoveEmoteCommand extends BaseCommand implements BaseCommandInterface {
     public async runCommand() {
 		this.loadInput();
 		

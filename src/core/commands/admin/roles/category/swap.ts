@@ -1,8 +1,7 @@
-import { AdminCommand } from "../../_admin";
-import { BaseCommandInterface } from "../../../../base-command";
+import { BaseCommandInterface, BaseCommand } from "../../../../base-command";
 import { firstLetterUppercase } from "../../../../functions";
 
-export class CategorySwapCommand extends AdminCommand implements BaseCommandInterface {
+export class CategorySwapCommand extends BaseCommand implements BaseCommandInterface {
 	public async runCommand() {
 		this.loadInput();
 

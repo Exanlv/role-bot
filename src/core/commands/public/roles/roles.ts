@@ -1,10 +1,9 @@
-import { PublicCommand } from "../_public";
-import { BaseCommandInterface } from "../../../base-command";
+import { BaseCommandInterface, BaseCommand } from "../../../base-command";
 import { List } from "../../../../shared/classes/list";
 import { ListValue } from "../../../../shared/classes/list-value";
 import { firstLetterUppercase } from "../../../functions";
 
-export class RolesCommand extends PublicCommand implements BaseCommandInterface {
+export class RolesCommand extends BaseCommand implements BaseCommandInterface {
 	public runCommand() {
 		const list = new List;
 

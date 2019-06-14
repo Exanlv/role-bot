@@ -1,7 +1,6 @@
-import { AdminCommand } from "../_admin";
-import { BaseCommandInterface } from "../../../base-command";
+import { BaseCommandInterface, BaseCommand } from "../../../base-command";
 
-export class SetLogChannelCommand extends AdminCommand implements BaseCommandInterface {
+export class SetLogChannelCommand extends BaseCommand implements BaseCommandInterface {
 	public runCommand() {
 		const channel = this.message.mentions.channels.first();
 

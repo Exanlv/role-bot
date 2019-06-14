@@ -1,7 +1,6 @@
-import { AdminCommand } from "../_admin";
-import { BaseCommandInterface } from "../../../base-command";
+import { BaseCommandInterface, BaseCommand } from "../../../base-command";
 
-export class RemoveActiveChannelCommand extends AdminCommand implements BaseCommandInterface {
+export class RemoveActiveChannelCommand extends BaseCommand implements BaseCommandInterface {
 	public runCommand() {
 		const channel = this.message.mentions.channels.first();
 

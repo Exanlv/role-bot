@@ -1,9 +1,8 @@
-import { AdminCommand } from "../_admin";
-import { BaseCommandInterface } from "../../../base-command";
+import { BaseCommandInterface, BaseCommand } from "../../../base-command";
 import { ListValue } from "../../../../shared/classes/list-value";
 import { List } from "../../../../shared/classes/list";
 
-export class ListModRoleCommand extends AdminCommand implements BaseCommandInterface {
+export class ListModRoleCommand extends BaseCommand implements BaseCommandInterface {
 	public runCommand() {
 		let listValue = new ListValue;
 		listValue.title = 'Mod roles'

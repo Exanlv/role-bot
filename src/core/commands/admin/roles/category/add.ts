@@ -1,8 +1,7 @@
-import { AdminCommand } from "../../_admin";
-import { BaseCommandInterface } from "../../../../base-command";
+import { BaseCommandInterface, BaseCommand } from "../../../../base-command";
 import { firstLetterUppercase } from "../../../../functions";
 
-export class AddCategoryCommand extends AdminCommand implements BaseCommandInterface {
+export class AddCategoryCommand extends BaseCommand implements BaseCommandInterface {
     public async runCommand() {
 		const categoryName = this.args.join(' ') || await this.getUserInput('``> enter a name for the category you want to create``');
 

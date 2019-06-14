@@ -1,7 +1,6 @@
-import { AdminCommand } from "../_admin";
-import { BaseCommandInterface } from "../../../base-command";
+import { BaseCommandInterface, BaseCommand } from "../../../base-command";
 
-export class PrefixCommand extends AdminCommand implements BaseCommandInterface {
+export class PrefixCommand extends BaseCommand implements BaseCommandInterface {
 	public runCommand() {
 		this.sendMessage(`Current prefix for ${this.message.guild.name}: \`\`${this.serverConfig.prefix}\`\``);
 	}

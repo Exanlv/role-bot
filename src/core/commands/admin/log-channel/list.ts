@@ -1,7 +1,6 @@
-import { AdminCommand } from "../_admin";
-import { BaseCommandInterface } from "../../../base-command";
+import { BaseCommandInterface, BaseCommand } from "../../../base-command";
 
-export class ListLogChannelCommand extends AdminCommand implements BaseCommandInterface {
+export class ListLogChannelCommand extends BaseCommand implements BaseCommandInterface {
 	runCommand() {
 		if (this.serverConfig.logChannel) {
 			this.sendMessage(`The current log channel is <#${this.serverConfig.logChannel}>`);
