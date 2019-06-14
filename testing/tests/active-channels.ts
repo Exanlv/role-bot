@@ -10,7 +10,7 @@ export class ActiveChannelsTest extends BaseTest implements UnitTest {
 		 * Tests the active channel list when theres no active channels set
 		 */
 		await this.simpleTest(
-			'!rbt ac',
+			`${this.roleBot.globalConfig.prefixes.admin}ac`,
 			'There are no active channels',
 			'No active channels list'
 		);
@@ -24,7 +24,7 @@ export class ActiveChannelsTest extends BaseTest implements UnitTest {
 		 * Tests adding an active channel
 		 */
 		await this.simpleTest(
-			`!rbt ac a <#${this.secondTestChannel.id}>`,
+			`${this.roleBot.globalConfig.prefixes.admin}ac a <#${this.secondTestChannel.id}>`,
 			`Added channel \`\`${this.secondTestChannel.name}\`\` as active channel`,
 			'Add active channel'
 		);
@@ -32,7 +32,7 @@ export class ActiveChannelsTest extends BaseTest implements UnitTest {
 		/**
 		 * Tests whether the bot responds in inactive channels
 		 */
-		this.resultTest('No response in inactive channels', !(await this.runCommand('!rbt ac', {time: 5000}) as boolean));
+		this.resultTest('No response in inactive channels', !(await this.runCommand(`${this.roleBot.globalConfig.prefixes.admin}ac`, {time: 5000}) as boolean));
 
 		/**
 		 * Tests the active channels list command
@@ -43,7 +43,7 @@ export class ActiveChannelsTest extends BaseTest implements UnitTest {
 		 * Tests adding a channel twice as active channel
 		 */
 		await this.simpleTest(
-			`!rbt ac a <#${this.secondTestChannel.id}>`,
+			`${this.roleBot.globalConfig.prefixes.admin}ac a <#${this.secondTestChannel.id}>`,
 			'Could not add channel as active channel; this channel already is an active channel',
 			'Add active channel twice',
 			{channel: this.secondTestChannel}
@@ -53,7 +53,7 @@ export class ActiveChannelsTest extends BaseTest implements UnitTest {
 		 * Tests removing a channel from active channels
 		 */
 		await this.simpleTest(
-			`!rbt ac r <#${this.secondTestChannel.id}>`,
+			`${this.roleBot.globalConfig.prefixes.admin}ac r <#${this.secondTestChannel.id}>`,
 			`Removed channel \`\`${this.secondTestChannel.name}\`\` from active channels`,
 			'Remove active channel',
 			{channel: this.secondTestChannel}
@@ -63,7 +63,7 @@ export class ActiveChannelsTest extends BaseTest implements UnitTest {
 		 * Tests removing a channel from active channels twice
 		 */
 		await this.simpleTest(
-			`!rbt ac r <#${this.secondTestChannel.id}>`,
+			`${this.roleBot.globalConfig.prefixes.admin}ac r <#${this.secondTestChannel.id}>`,
 			'Could not remove channel from active channels; this channel is not an active channel',
 			'Remove active channel'
 		);
@@ -72,7 +72,7 @@ export class ActiveChannelsTest extends BaseTest implements UnitTest {
 		 * Tests adding an invalid channel to active channels
 		 */
 		await this.simpleTest(
-			'!rbt ac a <#12345>',
+			`${this.roleBot.globalConfig.prefixes.admin}ac a <#12345>`,
 			'Could not add channel as active channel; this channel does not exist',
 			'Add invalid channel'
 		);
@@ -81,7 +81,7 @@ export class ActiveChannelsTest extends BaseTest implements UnitTest {
 		 * Tests removing an invalid channel to active channels
 		 */
 		await this.simpleTest(
-			'!rbt ac r <#12345>',
+			`${this.roleBot.globalConfig.prefixes.admin}ac r <#12345>`,
 			'Could not remove channel from active channels; this channel does not exist',
 			'Remove invalid channel'
 		);
@@ -94,7 +94,7 @@ export class ActiveChannelsTest extends BaseTest implements UnitTest {
 	}
 
 	private async activeChannelListTest(testCode) {
-		const message = await this.runCommand('!rbt ac', {channel: this.secondTestChannel}) as Message;
+		const message = await this.runCommand(`${this.roleBot.globalConfig.prefixes.admin}ac`, {channel: this.secondTestChannel}) as Message;
 		this.resultTest(testCode, !(typeof message === "boolean" || (message as Message).embeds.length < 1 || (message as Message).embeds[0].fields[0].value !== `- ${this.secondTestChannel.name}`));
 	}
 }

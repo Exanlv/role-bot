@@ -11,7 +11,7 @@ export class ModRolesTest extends BaseTest implements UnitTest {
 		 * Tests listing mod roles when there are no mod roles
 		 */
 		await this.simpleTest(
-			'!rbt mr',
+			`${this.roleBot.globalConfig.prefixes.admin}mr`,
 			'There are no mod-roles',
 			'No mod roles list'
 		);
@@ -25,7 +25,7 @@ export class ModRolesTest extends BaseTest implements UnitTest {
 		 * Tests adding a role as mod role
 		 */
 		await this.simpleTest(
-			`!rbt mr a ${this.testRole.name}`,
+			`${this.roleBot.globalConfig.prefixes.admin}mr a ${this.testRole.name}`,
 			`Added role \`\`${this.testRole.name}\`\` as mod-role`,
 			'Adding mod role'
 		);
@@ -34,7 +34,7 @@ export class ModRolesTest extends BaseTest implements UnitTest {
 		 * Tests adding a role as mod role twice
 		 */
 		await this.simpleTest(
-			`!rbt mr a ${this.testRole.name}`,
+			`${this.roleBot.globalConfig.prefixes.admin}mr a ${this.testRole.name}`,
 			`Could not add mod-role; role \`\`${this.testRole.name}\`\` is already a mod-role`,
 			'Adding mod role'
 		);
@@ -48,7 +48,7 @@ export class ModRolesTest extends BaseTest implements UnitTest {
 		 * Tests removing a modrole
 		 */
 		await this.simpleTest(
-			`!rbt mr r ${this.testRole.name}`,
+			`${this.roleBot.globalConfig.prefixes.admin}mr r ${this.testRole.name}`,
 			`Removed role \`\`${this.testRole.name}\`\` from mod-roles`,
 			'Removing mod role'
 		)
@@ -57,7 +57,7 @@ export class ModRolesTest extends BaseTest implements UnitTest {
 		 * Tests removing a modrole twice
 		 */
 		await this.simpleTest(
-			`!rbt mr r ${this.testRole.name}`,
+			`${this.roleBot.globalConfig.prefixes.admin}mr r ${this.testRole.name}`,
 			`Could not remove mod-role; role \`\`${this.testRole.name}\`\` is not a mod-role`,
 			'Removing mod role'
 		)
@@ -71,7 +71,7 @@ export class ModRolesTest extends BaseTest implements UnitTest {
 		 * Tests adding a role that does not exist to mod roles
 		 */
 		await this.simpleTest(
-			`!rbt mr a ${fakeRoleName}`,
+			`${this.roleBot.globalConfig.prefixes.admin}mr a ${fakeRoleName}`,
 			`Could not add mod-role; role \`\`${firstLetterUppercase(fakeRoleName)}\`\` does not exist`,
 			'Adding invalid role'
 		);
@@ -80,7 +80,7 @@ export class ModRolesTest extends BaseTest implements UnitTest {
 		 * Tests removing a role that does not exist to mod roles
 		 */
 		await this.simpleTest(
-			`!rbt mr r ${fakeRoleName}`,
+			`${this.roleBot.globalConfig.prefixes.admin}mr r ${fakeRoleName}`,
 			`Could not remove mod-role; role \`\`${firstLetterUppercase(fakeRoleName)}\`\` does not exist`,
 			'Removing invalid role'
 		);
@@ -89,7 +89,7 @@ export class ModRolesTest extends BaseTest implements UnitTest {
 		 * Tests adding a mod role without giving a name
 		 */
 		await this.simpleTestDoubleResponse(
-			'!rbt mr a',
+			`${this.roleBot.globalConfig.prefixes.admin}mr a`,
 			'``> enter role name``',
 			'Could not add mod-role; no role name was provided',
 			'Add empty mod role'
@@ -99,7 +99,7 @@ export class ModRolesTest extends BaseTest implements UnitTest {
 		 * Tests removing a mod role without giving a name
 		 */
 		await this.simpleTestDoubleResponse(
-			'!rbt mr r',
+			`${this.roleBot.globalConfig.prefixes.admin}mr r`,
 			'``> enter role name``',
 			'Could not remove mod-role; no role name was provided',
 			'Remove empty mod role'
@@ -113,7 +113,7 @@ export class ModRolesTest extends BaseTest implements UnitTest {
 	}
 
 	private async modRolesListTest(testCode) {
-		const message = await this.runCommand('!rbt mr') as Message;
+		const message = await this.runCommand(`${this.roleBot.globalConfig.prefixes.admin}mr`) as Message;
 		this.resultTest(testCode, !(typeof message === "boolean" || (message as Message).embeds.length < 1 || (message as Message).embeds[0].fields[0].value !== `- ${this.testRole.name}`));
 	}
 }

@@ -7,13 +7,13 @@ export class LogChannelTest extends BaseTest implements UnitTest {
 
 	public async runTests() {
 		await this.simpleTest(
-			'!rbt lc',
+			`${this.roleBot.globalConfig.prefixes.admin}lc`,
 			'No log channel is currently set',
 			'Get no log channel'
 		);
 
 		await this.simpleTest(
-			'!rbt lc s',
+			`${this.roleBot.globalConfig.prefixes.admin}lc s`,
 			'Could not set log channel; no channel was given',
 			'Setting no log channel'
 		);
@@ -21,20 +21,20 @@ export class LogChannelTest extends BaseTest implements UnitTest {
 		this.logChannel = await this.testServer.createChannel('log-channel') as TextChannel;
 
 		await this.simpleTest(
-			`!rbt lc s <#${this.logChannel.id}>`,
+			`${this.roleBot.globalConfig.prefixes.admin}lc s <#${this.logChannel.id}>`,
 			`Succesfully set <#${this.logChannel.id}> as log channel!`,
 			'Setting log channel'
 		);
 
 		await this.simpleTest(
-			`!rbt lc s <#${this.logChannel.id}>`,
+			`${this.roleBot.globalConfig.prefixes.admin}lc s <#${this.logChannel.id}>`,
 			`Could not set log channel; <#${this.logChannel.id}> already is the log channel`,
 			'Setting log channel twice'
 		);
 	}
 
 	public cleanUp() {
-		if (this.logChannel) {
+		if (this.logChannel && this.logChannel.deletable) {
 			this.logChannel.delete();
 		}
 	}
