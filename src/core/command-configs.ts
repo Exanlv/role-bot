@@ -45,12 +45,12 @@ export const COMMANDCONFIGS: CommandConfigs = {
 					SetLogChannelCommand
 				),
 				new CommandConfig(
-					['LIST', 'L'],
-					ListLogChannelCommand
-				),
-				new CommandConfig(
 					['REMOVE', 'R'],
 					RemoveLogChannelCommand
+				),
+				new CommandConfig(
+					['LIST', 'L'],
+					ListLogChannelCommand
 				)
 			]
 		),
@@ -111,12 +111,12 @@ export const COMMANDCONFIGS: CommandConfigs = {
 							ListCategoryCommand
 						),
 						new CommandConfig(
-							['CHANGE', 'C'],
-							ChangeCategoryNameCommand
-						),
-						new CommandConfig(
 							['SWAP', 'S'],
 							CategorySwapCommand
+						),
+						new CommandConfig(
+							['CHANGE', 'C'],
+							ChangeCategoryNameCommand
 						)
 					]
 				)
