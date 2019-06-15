@@ -2,6 +2,8 @@ import { BaseCommandInterface, BaseCommand } from "../../../base-command";
 import { firstLetterUppercase } from "../../../functions";
 
 export class RemoveRoleCommand extends BaseCommand implements BaseCommandInterface {
+	public static description: string = 'Remove a role';
+
 	public runCommand() {
 		const roleName = this.args.join(' ');
 

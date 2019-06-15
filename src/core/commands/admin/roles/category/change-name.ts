@@ -2,6 +2,8 @@ import { BaseCommandInterface, BaseCommand } from "../../../../base-command";
 import { firstLetterUppercase } from "../../../../functions";
 
 export class ChangeCategoryNameCommand extends BaseCommand implements BaseCommandInterface {
+	public static description: string = 'Changes the name of a category';
+
 	public async runCommand() {
 		this.loadInput();
 

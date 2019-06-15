@@ -4,6 +4,8 @@ import { ListValue } from "../../../../shared/classes/list-value";
 import { firstLetterUppercase } from "../../../functions";
 
 export class RolesCommand extends BaseCommand implements BaseCommandInterface {
+	public static description: string = 'Lists self-assignable roles';
+
 	public runCommand() {
 		const list = new List;
 

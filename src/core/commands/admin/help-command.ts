@@ -1,7 +1,10 @@
-import { BaseCommandInterface, BaseCommand } from "../../base-command";
+import { BaseCommandInterface } from "../../base-command";
+import { GeneralHelpCommand } from "../help-command";
 
-export class AdminHelpCommand extends BaseCommand implements BaseCommandInterface {
+export class AdminHelpCommand extends GeneralHelpCommand implements BaseCommandInterface {
+	public static description: string = 'Brings up this menu';
+
 	public runCommand() {
-		this.sendMessage('For a list of commands, please refer to the setup guide.\nhttps://landviz.nl/host/role-bot-setup.pdf');
+		super.runCommand('admin');
 	}
 }

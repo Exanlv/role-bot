@@ -1,13 +1,10 @@
-import { BaseCommandInterface, BaseCommand } from "../../base-command";
+import { BaseCommandInterface } from "../../base-command";
+import { GeneralHelpCommand } from "../help-command";
 
-export class PublicHelpCommand extends BaseCommand implements BaseCommandInterface {
+export class PublicHelpCommand extends GeneralHelpCommand implements BaseCommandInterface {
+	public static description: string = 'Brings up this menu';
+
 	public runCommand() {
-		let message = '```';
-		message += `${this.serverConfig.prefix}roles - get a list of all available roles\n`;
-		message += `${this.serverConfig.prefix}getrole (role) - get a role\n`;
-		message += `${this.serverConfig.prefix}removerole (role) - remove a role\n`;
-		message += '```'
-
-		this.sendMessage(message);
+		super.runCommand('public');
 	}
 } 

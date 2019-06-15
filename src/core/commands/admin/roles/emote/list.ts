@@ -5,7 +5,9 @@ import { firstLetterUppercase } from "../../../../functions";
 import { TextChannel } from "discord.js";
 
 export class ListEmoteCommand extends BaseCommand implements BaseCommandInterface {
-    public async runCommand() {
+	public static description: string = 'Lists the current reacts';
+
+	public async runCommand() {
 		let categorys;
         if (this.args.length) {
 			this.loadInput();

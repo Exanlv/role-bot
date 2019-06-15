@@ -2,6 +2,8 @@ import { BaseCommandInterface, BaseCommand } from "../../../base-command";
 import { firstLetterUppercase } from "../../../functions";
 
 export class GetRoleCommand extends BaseCommand implements BaseCommandInterface {
+	public static description: string = 'Get a role';
+
 	runCommand() {
 		const roleName = this.args.join(' ');
 

@@ -5,7 +5,9 @@ import { firstLetterUppercase } from "../../../../functions";
 import * as fetch from 'node-fetch';
 
 export class AddEmoteCommand extends BaseCommand implements BaseCommandInterface {
-    public async runCommand() {
+	public static description: string = 'Adds a role react';
+
+	public async runCommand() {
 		this.loadInput();
 		
 		const roleName = this.input.ROLE || this.input.R || await this.getUserInput('``> enter role name``');

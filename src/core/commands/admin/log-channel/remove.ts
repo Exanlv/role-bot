@@ -1,6 +1,8 @@
 import { BaseCommandInterface, BaseCommand } from "../../../base-command";
 
 export class RemoveLogChannelCommand extends BaseCommand implements BaseCommandInterface {
+	public static description: string = 'Unsets the log channel';
+
 	runCommand() {
 		const logChannel = this.serverConfig.logChannel;
 		this.serverConfig.setLogChannel(null);

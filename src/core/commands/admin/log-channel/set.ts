@@ -1,6 +1,8 @@
 import { BaseCommandInterface, BaseCommand } from "../../../base-command";
 
 export class SetLogChannelCommand extends BaseCommand implements BaseCommandInterface {
+	public static description: string = 'Sets the log channel';
+
 	public runCommand() {
 		const channel = this.message.mentions.channels.first();
 

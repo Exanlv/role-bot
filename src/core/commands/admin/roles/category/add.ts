@@ -2,7 +2,9 @@ import { BaseCommandInterface, BaseCommand } from "../../../../base-command";
 import { firstLetterUppercase } from "../../../../functions";
 
 export class AddCategoryCommand extends BaseCommand implements BaseCommandInterface {
-    public async runCommand() {
+	public static description: string = 'Adds a role category';
+
+	public async runCommand() {
 		const categoryName = this.args.join(' ') || await this.getUserInput('``> enter a name for the category you want to create``');
 
 		if (!categoryName) {

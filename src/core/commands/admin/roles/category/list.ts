@@ -4,7 +4,9 @@ import { ListValue } from "../../../../../shared/classes/list-value";
 import { firstLetterUppercase } from "../../../../functions";
 
 export class ListCategoryCommand extends BaseCommand implements BaseCommandInterface {
-    public runCommand() {
+	public static description: string = 'Lists the current role categories';
+
+	public runCommand() {
         const categorys = this.serverConfig.selfAssign.raw();
 		const listValue = new ListValue;
 		categorys.forEach(category => {

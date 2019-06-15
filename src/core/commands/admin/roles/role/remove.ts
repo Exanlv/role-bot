@@ -2,7 +2,9 @@ import { BaseCommandInterface, BaseCommand } from "../../../../base-command";
 import { firstLetterUppercase } from "../../../../functions";
 
 export class RemoveRoleCommand extends BaseCommand implements BaseCommandInterface {
-    public async runCommand() {
+	public static description: string = 'Makes a role no longer self-assignable';
+
+	public async runCommand() {
         this.loadInput();
 
 		const roleName = this.input.ROLE || this.input.R || await this.getUserInput('``> enter role name``');

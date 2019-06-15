@@ -2,7 +2,9 @@ import { BaseCommandInterface, BaseCommand } from "../../../../base-command";
 import { firstLetterUppercase } from "../../../../functions";
 
 export class RemoveCategoryCommand extends BaseCommand implements BaseCommandInterface {
-    public async runCommand() {
+	public static description: string = 'Removes a role category';
+
+	public async runCommand() {
         const categoryName = this.args.join(' ') || await this.getUserInput('``> enter the name of the category you want to delete``');
 
 		if (!categoryName) {

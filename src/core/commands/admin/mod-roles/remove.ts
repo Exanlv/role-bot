@@ -2,6 +2,8 @@ import { BaseCommandInterface, BaseCommand } from "../../../base-command";
 import { firstLetterUppercase } from "../../../functions";
 
 export class RemoveModRoleCommand extends BaseCommand implements BaseCommandInterface {
+	public static description: string = 'Removes a mod role';
+
 	public async runCommand() {
 		const roleName = this.args.join(' ') || await this.getUserInput('``> enter role name``');
 

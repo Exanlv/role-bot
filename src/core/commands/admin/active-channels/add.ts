@@ -1,6 +1,8 @@
 import { BaseCommandInterface, BaseCommand } from "../../../base-command";
 
 export class AddActiveChannelCommand extends BaseCommand implements BaseCommandInterface {
+	public static description: string = 'Adds an active channel';
+
 	public runCommand() {
 		const channel = this.message.mentions.channels.first();
 

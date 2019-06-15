@@ -3,7 +3,9 @@ import { firstLetterUppercase } from "../../../../functions";
 import { TextChannel } from "discord.js";
 
 export class RemoveEmoteCommand extends BaseCommand implements BaseCommandInterface {
-    public async runCommand() {
+	public static description: string = 'Removes a react role';
+
+	public async runCommand() {
 		this.loadInput();
 		
 		const category = this.input.CATEGORY || this.input.C || await this.getUserInput('``> enter category name``');

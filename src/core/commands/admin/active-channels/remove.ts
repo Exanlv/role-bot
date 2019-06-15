@@ -1,6 +1,8 @@
 import { BaseCommandInterface, BaseCommand } from "../../../base-command";
 
 export class RemoveActiveChannelCommand extends BaseCommand implements BaseCommandInterface {
+	public static description: string = 'Removes an active channel';
+
 	public runCommand() {
 		const channel = this.message.mentions.channels.first();
 

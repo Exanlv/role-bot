@@ -4,7 +4,9 @@ import { ListValue } from "../../../../../shared/classes/list-value";
 import { List } from "../../../../../shared/classes/list";
 
 export class ListRoleCommand extends BaseCommand implements BaseCommandInterface {
-    public runCommand() {
+	public static description: string = 'Lists the current self-assignable roles';
+
+	public runCommand() {
 		const categoryName = this.args.join(' ');
 		const list = new List;
 

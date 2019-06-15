@@ -3,6 +3,8 @@ import { ListValue } from "../../../../shared/classes/list-value";
 import { List } from "../../../../shared/classes/list";
 
 export class ListModRoleCommand extends BaseCommand implements BaseCommandInterface {
+	public static description: string = 'Lists the current mod roles';
+
 	public runCommand() {
 		let listValue = new ListValue;
 		listValue.title = 'Mod roles'

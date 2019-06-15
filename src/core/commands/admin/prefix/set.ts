@@ -1,6 +1,8 @@
 import { BaseCommandInterface, BaseCommand } from "../../../base-command";
 
 export class SetPrefixCommand extends BaseCommand implements BaseCommandInterface {
+	public static description: string = 'Changes the prefix for public commands';
+
 	public runCommand() {
 		this.loadInput(false);
 

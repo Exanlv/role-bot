@@ -2,6 +2,8 @@ import { BaseCommandInterface, BaseCommand } from "../../../../base-command";
 import { firstLetterUppercase } from "../../../../functions";
 
 export class CategorySwapCommand extends BaseCommand implements BaseCommandInterface {
+	public static description: string = 'Swaps the location of two role categories';
+
 	public async runCommand() {
 		this.loadInput();
 
