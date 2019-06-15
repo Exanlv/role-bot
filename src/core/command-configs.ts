@@ -37,10 +37,6 @@ export const COMMANDCONFIGS: CommandConfigs = {
 	],
 	admin: [
 		new CommandConfig(
-			['HELP'],
-			AdminHelpCommand
-		),
-		new CommandConfig(
 			['LOG-CHANNEL', 'LC'],
 			ListLogChannelCommand,
 			[
@@ -171,6 +167,10 @@ export const COMMANDCONFIGS: CommandConfigs = {
 					SetPrefixCommand
 				)
 			]
+		),
+		new CommandConfig(
+			['HELP'],
+			AdminHelpCommand
 		)
 	],
 	public: [

@@ -53,8 +53,17 @@ export class BaseCommand {
 		}
 
 		list.values.forEach((listValue, i) => {
-			embed.addField(listValue.title, listValue.values.join('\n') + '\n\n', includeEmpty);
-			if(((i + 1 !== list.values.length) || list.values.length === 1) && includeEmpty)
+			let longestValue = listValue.title.length;
+
+			for (let i = 0; i < listValue.values.length; i++) {
+				if (listValue.values[i].length > longestValue) {
+					longestValue = listValue.values[i].length;
+				}
+			}
+			
+			const value = listValue.values.join('\n')
+			embed.addField(listValue.title, value + '\n\n', includeEmpty && longestValue < 40);
+			if(((i + 1 !== list.values.length) || list.values.length === 1) && includeEmpty && longestValue < 40)
 				embed.addBlankField(true);
 		});
 
