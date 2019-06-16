@@ -4,21 +4,26 @@
   "description": "Makes roles self-assignable",
   "main": "index.ts",
   "scripts": {
-    "start": "ts-node ./src/index.ts",
-    "test": "ts-node ./testing/index.ts"
+    "start": "ts-node ./src/bot-roles/index.ts",
+    "test": "ts-node ./src/bot-testing/index.ts"
   },
   "author": "Exan",
   "license": "ISC",
   "dependencies": {
     "discord.js": "^11.4.2",
     "fs": "0.0.1-security",
+    "module-alias": "^2.2.0",
     "node-fetch": "^2.6.0",
     "ts-node": "^8.2.0",
-    "tsc": "^1.20150623.0",
-    "typescript": "^3.4.5",
-    "url-exists": "^1.0.3"
+    "typescript": "^3.4.5"
   },
   "devDependencies": {
     "@types/node": "^12.0.8"
+  },
+  "_moduleAliases": {
+    "@bot-roles": "src/bot-roles",
+    "@bot-testing": "src/bot-testing",
+    "@classes": "src/classes",
+    "@core": "src/core"
   }
 }

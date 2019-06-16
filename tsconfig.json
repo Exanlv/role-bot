@@ -3,9 +3,16 @@
 		"moduleResolution": "node",
 		"target":"es2018",
 		"module": "commonjs",
+		"baseUrl": "src",
+		"paths": {
+			"@bot-roles/*": ["bot-roles/*"],
+			"@bot-testing/*": ["bot-testing/*"],
+			"@classes/*": ["classes/*"],
+			"@core/*": ["core/*"]
+		}
 	},
 	"include": [
-		"src/**/*", "core/bot.ts"
+		"src/**/*", "src/core/bot-roles.ts", "classes/base-command.ts", "classes/server-config.ts", "classes/classes"
 	],
 	"exclude": [
 		"node_modules/",
