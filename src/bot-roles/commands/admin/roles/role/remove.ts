@@ -1,11 +1,12 @@
-import { BaseCommandInterface, BaseCommand } from "@classes/base-command";
-import { firstLetterUppercase } from "@core/functions";
+import { BaseCommand, IBaseCommand } from '@classes/base-command';
+import { firstLetterUppercase } from '@core/functions';
+import { Role } from 'discord.js';
 
-export class RemoveRoleCommand extends BaseCommand implements BaseCommandInterface {
+export class RemoveRoleCommand extends BaseCommand implements IBaseCommand {
 	public static description: string = 'Makes a role no longer self-assignable';
 
-	public async runCommand() {
-        this.loadInput();
+	public async runCommand(): Promise<void> {
+		this.loadInput();
 
 		const roleName = this.input.ROLE || this.input.R || await this.getUserInput('``> enter role name``');
 
@@ -14,7 +15,7 @@ export class RemoveRoleCommand extends BaseCommand implements BaseCommandInterfa
 			return;
 		}
 
-		const role = this.message.guild.roles.find(r => r.name.toUpperCase() === roleName);
+		const role = this.message.guild.roles.find((r: Role) => r.name.toUpperCase() === roleName);
 
 		if (!role) {
 			this.sendMessage(`Could not remove self-assignable role; role \`\`${firstLetterUppercase(roleName)}\`\` does not exist`);
@@ -40,5 +41,5 @@ export class RemoveRoleCommand extends BaseCommand implements BaseCommandInterfa
 
 		this.serverConfig.selfAssign.removeRole(categoryName, role.id);
 		this.sendMessage(`Removed role \`\`${role.name}\`\` from self-assignable roles in category \`\`${firstLetterUppercase(categoryName)}\`\``);
-    }
+	}
 }

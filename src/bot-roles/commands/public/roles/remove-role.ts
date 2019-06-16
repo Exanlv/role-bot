@@ -1,10 +1,11 @@
-import { BaseCommandInterface, BaseCommand } from "@classes/base-command";
-import { firstLetterUppercase } from "@core/functions";
+import { BaseCommand, IBaseCommand } from '@classes/base-command';
+import { firstLetterUppercase } from '@core/functions';
+import { DiscordAPIError, GuildMember, Role } from 'discord.js';
 
-export class RemoveRoleCommand extends BaseCommand implements BaseCommandInterface {
+export class RemoveRoleCommand extends BaseCommand implements IBaseCommand {
 	public static description: string = 'Remove a role';
 
-	public runCommand() {
+	public runCommand(): void {
 		const roleName = this.args.join(' ');
 
 		if (!roleName) {
@@ -12,7 +13,7 @@ export class RemoveRoleCommand extends BaseCommand implements BaseCommandInterfa
 			return;
 		}
 
-		const role = this.message.guild.roles.find(r => {return r.name.toUpperCase() === roleName});
+		const role = this.message.guild.roles.find((r: Role) => r.name.toUpperCase() === roleName);
 
 		if (!role) {
 			this.sendMessage(`Could not remove role; role \`\`${firstLetterUppercase(roleName)}\`\` does not exist`);
@@ -24,18 +25,18 @@ export class RemoveRoleCommand extends BaseCommand implements BaseCommandInterfa
 			return;
 		}
 
-		if (!this.message.member.roles.some((memberRole) => {return memberRole.id === role.id})) {
+		if (!this.message.member.roles.some((memberRole: Role) => memberRole.id === role.id)) {
 			this.sendMessage(`Could not remove role; you do not have this role`);
 			return;
 		}
 
 		this.message.member.removeRole(role)
-			.catch(error => {
+			.catch((error: DiscordAPIError) => {
 				this.handleError(error, 'HandleRoles');
 			})
-			.then(e => {
+			.then((e: GuildMember) => {
 				this.message.react('👍')
-					.catch(e => {this.handleError(e, 'ApplyReact')})
+					.catch((e: DiscordAPIError) => {this.handleError(e, 'ApplyReact'); })
 				;
 			})
 		;

@@ -1,16 +1,16 @@
-import { BaseTest, UnitTest } from "@classes/base-test";
+import { BaseTest, IUnitTest } from '@classes/base-test';
 
-export class PrefixTest extends BaseTest implements UnitTest {
+export class PrefixTest extends BaseTest implements IUnitTest {
 	public name: string = 'Prefix';
-	
-	public async runTests() {
+
+	public async runTests(): Promise<void> {
 		/**
 		 * Get default prefix
 		 */
 		await this.simpleTest(
 			`${this.roleBot.globalConfig.prefixes.admin}p`,
 			`Current prefix for ${this.testServer.name}: \`\`;;\`\``,
-			'Get current prefix'
+			'Get current prefix',
 		);
 
 		/**
@@ -19,7 +19,7 @@ export class PrefixTest extends BaseTest implements UnitTest {
 		await this.simpleTest(
 			`${this.roleBot.globalConfig.prefixes.admin}p s`,
 			'Could not set prefix; no prefix was given',
-			'Set no prefix'
+			'Set no prefix',
 		);
 
 		/**
@@ -28,7 +28,7 @@ export class PrefixTest extends BaseTest implements UnitTest {
 		await this.simpleTest(
 			`${this.roleBot.globalConfig.prefixes.admin}p s p:{}`,
 			'Could not set prefix; no prefix was given',
-			'Set no prefix'
+			'Set no prefix',
 		);
 
 		/**
@@ -37,7 +37,7 @@ export class PrefixTest extends BaseTest implements UnitTest {
 		await this.simpleTest(
 			`${this.roleBot.globalConfig.prefixes.admin}p s p:{${this.roleBot.globalConfig.prefixes.admin}}`,
 			'Could not set prefix; this prefix can not be used',
-			'Set prefix to admin prefix'
+			'Set prefix to admin prefix',
 		);
 
 		/**
@@ -46,7 +46,7 @@ export class PrefixTest extends BaseTest implements UnitTest {
 		await this.simpleTest(
 			`${this.roleBot.globalConfig.prefixes.admin}p s p:{${this.roleBot.globalConfig.prefixes.dev}}`,
 			'Could not set prefix; this prefix can not be used',
-			'Set prefix to dev prefix'
+			'Set prefix to dev prefix',
 		);
 
 		/**
@@ -55,7 +55,7 @@ export class PrefixTest extends BaseTest implements UnitTest {
 		await this.simpleTest(
 			`${this.roleBot.globalConfig.prefixes.admin}p s p:{abcdefghijklmnopqrstuvwxyz}`,
 			'Could not set prefix; given prefix is too long',
-			'Set prefix to 25+ chars'
+			'Set prefix to 25+ chars',
 		);
 
 		/**
@@ -64,7 +64,7 @@ export class PrefixTest extends BaseTest implements UnitTest {
 		await this.simpleTest(
 			`${this.roleBot.globalConfig.prefixes.admin}p s p:{>:}`,
 			'Prefix set!',
-			'Setting prefix'
+			'Setting prefix',
 		);
 
 		/**
@@ -73,7 +73,7 @@ export class PrefixTest extends BaseTest implements UnitTest {
 		await this.simpleTest(
 			`${this.roleBot.globalConfig.prefixes.admin}p`,
 			`Current prefix for ${this.testServer.name}: \`\`>:\`\``,
-			'Get updated prefix'
+			'Get updated prefix',
 		);
 	}
 }

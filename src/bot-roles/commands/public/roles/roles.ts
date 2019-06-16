@@ -1,20 +1,23 @@
-import { BaseCommandInterface, BaseCommand } from "@classes/base-command";
-import { List } from "@classes/list";
-import { ListValue } from "@classes/list-value";
-import { firstLetterUppercase } from "@core/functions";
+import { BaseCommand, IBaseCommand } from '@classes/base-command';
+import { List } from '@classes/list';
+import { ListValue } from '@classes/list-value';
+import { RoleCategory } from '@classes/role-category';
+import { RoleConfig } from '@classes/role-config';
+import { firstLetterUppercase } from '@core/functions';
+import { Role } from 'discord.js';
 
-export class RolesCommand extends BaseCommand implements BaseCommandInterface {
+export class RolesCommand extends BaseCommand implements IBaseCommand {
 	public static description: string = 'Lists self-assignable roles';
 
-	public runCommand() {
-		const list = new List;
+	public runCommand(): void {
+		const list = new List();
 
-		this.serverConfig.selfAssign.raw().forEach(category => {
-			let listValue = new ListValue;
+		this.serverConfig.selfAssign.raw().forEach((category: RoleCategory) => {
+			const listValue = new ListValue();
 			listValue.title = firstLetterUppercase(category.name);
 
-			category.roles.forEach(role => {
-				let guildRole = this.message.guild.roles.find(r => r.id === role.id);
+			category.roles.forEach((role: RoleConfig) => {
+				const guildRole = this.message.guild.roles.find((r: Role) => r.id === role.id);
 
 				if (!guildRole) {
 					this.serverConfig.selfAssign.removeRole(category.name, role.id);

@@ -1,14 +1,14 @@
-import { existsSync, readFileSync, writeFileSync, unlink } from 'fs';
-import { SelfAssign } from "@classes/self-assign";
+import { SelfAssign } from '@classes/self-assign';
+import { existsSync, readFileSync, unlink, writeFileSync } from 'fs';
 
 export class ServerConfig {
-	private serverId: string;
 	public prefix: string = ';;';
-	public activeChannels: Array<string> = [];
-	public adminRoles: Array<string> = [];
-	public selfAssign: SelfAssign = new SelfAssign;
-	private confDir: string;
+	public activeChannels: string[] = [];
+	public adminRoles: string[] = [];
+	public selfAssign: SelfAssign = new SelfAssign();
 	public logChannel: string;
+	private serverId: string;
+	private confDir: string;
 
 	constructor(id: string, dataDir: string) {
 		this.confDir = dataDir;
@@ -27,16 +27,16 @@ export class ServerConfig {
 
 		this.selfAssign.on('ValuesChanged', () => {
 			this.saveConfig();
-		})
+		});
 	}
 
-	public getRaw() {
+	public getRaw(): {} {
 		return {
-			'prefix' : this.prefix,
-			'activeChannels': this.activeChannels,
-			'adminRoles': this.adminRoles,
-			'selfAssign': this.selfAssign.raw(),
-			'logChannel': this.logChannel
+			prefix : this.prefix,
+			activeChannels: this.activeChannels,
+			adminRoles: this.adminRoles,
+			selfAssign: this.selfAssign.raw(),
+			logChannel: this.logChannel,
 		};
 	}
 
@@ -44,13 +44,13 @@ export class ServerConfig {
 	 * Saves the config to disk
 	 * @param id Id of the guild
 	 */
-	public saveConfig(conf = null) {
+	public saveConfig(conf: {} = null): void {
 		writeFileSync(`${this.confDir}/${this.serverId}.json`, JSON.stringify(conf || this.getRaw()));
 	}
 
-	public delete() {
+	public delete(): void {
 		if (existsSync(`${this.confDir}/${this.serverId}.json`)) {
-			unlink(`${this.confDir}/${this.serverId}.json`, err => {
+			unlink(`${this.confDir}/${this.serverId}.json`, (err: any) => {
 				if (err) {
 					console.log(err);
 				}
@@ -60,11 +60,12 @@ export class ServerConfig {
 
 	/**
 	 * Sets the public prefix for the current server
-	 * @param prefix 
+	 * @param prefix
 	 */
-	public setPrefix(prefix: string) {
-		if (this.prefix === prefix)
+	public setPrefix(prefix: string): void {
+		if (this.prefix === prefix) {
 			return;
+		}
 
 		this.prefix = prefix;
 		this.saveConfig();
@@ -96,16 +97,16 @@ export class ServerConfig {
 		this.saveConfig();
 	}
 
-	public setLogChannel(channelId) {
+	public setLogChannel(channelId: string): void {
 		this.logChannel = channelId;
 		this.saveConfig();
 	}
 
-	public reset() {
+	public reset(): void {
 		this.prefix = ';;';
 		this.activeChannels = [];
 		this.adminRoles = [];
-		this.selfAssign = new SelfAssign;
+		this.selfAssign = new SelfAssign();
 		this.saveConfig();
 	}
 }

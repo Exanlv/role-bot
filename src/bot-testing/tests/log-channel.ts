@@ -1,21 +1,21 @@
-import { BaseTest, UnitTest } from "@classes/base-test";
-import { TextChannel } from "discord.js";
+import { BaseTest, IUnitTest } from '@classes/base-test';
+import { TextChannel } from 'discord.js';
 
-export class LogChannelTest extends BaseTest implements UnitTest {
+export class LogChannelTest extends BaseTest implements IUnitTest {
 	public name: string = 'Log Channel';
 	public logChannel: TextChannel;
 
-	public async runTests() {
+	public async runTests(): Promise<void> {
 		await this.simpleTest(
 			`${this.roleBot.globalConfig.prefixes.admin}lc`,
 			'No log channel is currently set',
-			'Get no log channel'
+			'Get no log channel',
 		);
 
 		await this.simpleTest(
 			`${this.roleBot.globalConfig.prefixes.admin}lc s`,
 			'Could not set log channel; no channel was given',
-			'Setting no log channel'
+			'Setting no log channel',
 		);
 
 		this.logChannel = await this.testServer.createChannel('log-channel') as TextChannel;
@@ -23,17 +23,17 @@ export class LogChannelTest extends BaseTest implements UnitTest {
 		await this.simpleTest(
 			`${this.roleBot.globalConfig.prefixes.admin}lc s <#${this.logChannel.id}>`,
 			`Succesfully set <#${this.logChannel.id}> as log channel!`,
-			'Setting log channel'
+			'Setting log channel',
 		);
 
 		await this.simpleTest(
 			`${this.roleBot.globalConfig.prefixes.admin}lc s <#${this.logChannel.id}>`,
 			`Could not set log channel; <#${this.logChannel.id}> already is the log channel`,
-			'Setting log channel twice'
+			'Setting log channel twice',
 		);
 	}
 
-	public cleanUp() {
+	public cleanUp(): void {
 		if (this.logChannel && this.logChannel.deletable) {
 			this.logChannel.delete();
 		}

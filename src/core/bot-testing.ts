@@ -1,14 +1,14 @@
-import { Client, Guild, TextChannel } from "discord.js";
-import { RoleBot } from "@core/bot-roles";
-import { getRolebot } from "@core/get-bots";
-import { ActiveChannelsTest } from "@bot-testing/tests/active-channels";
-import { ModRolesTest } from "@bot-testing/tests/mod-roles";
-import { PrefixTest } from "@bot-testing/tests/prefix";
-import { LogChannelTest } from "@bot-testing/tests/log-channel";
-import { SelfAssignCategoryTest } from "@bot-testing/tests/selfassign-category";
-import { SelfAssignRolesTest } from "@bot-testing/tests/selfassign-roles";
-import { SelfAssignEmotesTest } from "@bot-testing/tests/selfassign-emotes";
+import { ActiveChannelsTest } from '@bot-testing/tests/active-channels';
+import { LogChannelTest } from '@bot-testing/tests/log-channel';
+import { ModRolesTest } from '@bot-testing/tests/mod-roles';
+import { PrefixTest } from '@bot-testing/tests/prefix';
+import { SelfAssignCategoryTest } from '@bot-testing/tests/selfassign-category';
+import { SelfAssignEmotesTest } from '@bot-testing/tests/selfassign-emotes';
+import { SelfAssignRolesTest } from '@bot-testing/tests/selfassign-roles';
+import { RoleBot } from '@core/bot-roles';
 import { sleep } from '@core/functions';
+import { getRolebot } from '@core/get-bots';
+import { Client, Guild, GuildChannel, TextChannel } from 'discord.js';
 
 export class TestingBot {
 	private client: Client;
@@ -20,7 +20,7 @@ export class TestingBot {
 
 	private roleBot: RoleBot;
 
-	constructor(token: string, rootDir) {
+	constructor(token: string, rootDir: string) {
 		this.client = new Client();
 
 		this.rootDir = rootDir;
@@ -28,11 +28,11 @@ export class TestingBot {
 		this.client.on('ready', async () => {
 			console.log('Bot logged in');
 
-			this.testServer = this.client.guilds.find(g => g.id === this.roleBot.globalConfig.devServerId);
-			this.testChannel = this.testServer.channels.find(c => c.name.toUpperCase() === 'TEST') as TextChannel;
+			this.testServer = this.client.guilds.find((g: Guild) => g.id === this.roleBot.globalConfig.devServerId);
+			this.testChannel = this.testServer.channels.find((c: GuildChannel) => c.name.toUpperCase() === 'TEST' && c.type === 'text') as TextChannel;
 
 			if (!this.testChannel) {
-				throw(`No channel called 'test' on '${this.testServer.name}'`)
+				throw new Error((`No channel called 'test' on '${this.testServer.name}'`));
 			}
 
 			await this.runTests();
@@ -48,7 +48,7 @@ export class TestingBot {
 		});
 	}
 
-	private async runTests() {
+	private async runTests(): Promise<void> {
 		const tests = [];
 
 		tests.push(new ActiveChannelsTest(this.client, this.testServer, this.testChannel, this.roleBot));
@@ -59,18 +59,19 @@ export class TestingBot {
 		tests.push(new SelfAssignRolesTest(this.client, this.testServer, this.testChannel, this.roleBot));
 		tests.push(new SelfAssignEmotesTest(this.client, this.testServer, this.testChannel, this.roleBot));
 
-		for(let i = 0; i < tests.length; i++) {
+		for (let i = 0; i < tests.length; i++) {
 			const currentConfig = this.roleBot.configs[this.testServer.id].getRaw();
 			this.roleBot.configs[this.testServer.id].reset();
 
 			try {
 				await tests[i].runTests();
-			} catch(err) {
+			} catch (err) {
 				console.log(err);
 			}
 
-			if (tests[i].cleanUp)
+			if (tests[i].cleanUp) {
 				await tests[i].cleanUp();
+			}
 
 			this.roleBot.configs[this.testServer.id].saveConfig(currentConfig);
 

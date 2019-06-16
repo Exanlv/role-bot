@@ -1,9 +1,9 @@
-import { BaseCommandInterface, BaseCommand } from "@classes/base-command";
+import { BaseCommand, IBaseCommand } from '@classes/base-command';
 
-export class AddActiveChannelCommand extends BaseCommand implements BaseCommandInterface {
+export class AddActiveChannelCommand extends BaseCommand implements IBaseCommand {
 	public static description: string = 'Adds an active channel';
 
-	public runCommand() {
+	public runCommand(): void {
 		const channel = this.message.mentions.channels.first();
 
 		if (!channel) {

@@ -1,10 +1,10 @@
-import { BaseCommandInterface, BaseCommand } from "@classes/base-command";
-import { firstLetterUppercase } from "@core/functions";
+import { BaseCommand, IBaseCommand } from '@classes/base-command';
+import { firstLetterUppercase } from '@core/functions';
 
-export class AddCategoryCommand extends BaseCommand implements BaseCommandInterface {
+export class AddCategoryCommand extends BaseCommand implements IBaseCommand {
 	public static description: string = 'Adds a role category';
 
-	public async runCommand() {
+	public async runCommand(): Promise<void> {
 		const categoryName = this.args.join(' ') || await this.getUserInput('``> enter a name for the category you want to create``');
 
 		if (!categoryName) {
@@ -12,7 +12,7 @@ export class AddCategoryCommand extends BaseCommand implements BaseCommandInterf
 			return;
 		}
 
-		if(categoryName.length > 50) {
+		if (categoryName.length > 50) {
 			this.sendMessage('Could not add category; given category name is too long, max. 50 characters');
 			return;
 		}
@@ -24,5 +24,5 @@ export class AddCategoryCommand extends BaseCommand implements BaseCommandInterf
 
 		this.serverConfig.selfAssign.addCategory(categoryName);
 		this.sendMessage(`Added category \`\`${firstLetterUppercase(categoryName)}\`\``);
-    }
+	}
 }

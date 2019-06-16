@@ -1,9 +1,9 @@
-import { BaseCommandInterface, BaseCommand } from "@classes/base-command";
+import { BaseCommand, IBaseCommand } from '@classes/base-command';
 
-export class SetPrefixCommand extends BaseCommand implements BaseCommandInterface {
+export class SetPrefixCommand extends BaseCommand implements IBaseCommand {
 	public static description: string = 'Changes the prefix for public commands';
 
-	public runCommand() {
+	public runCommand(): void {
 		this.loadInput(false);
 
 		const prefix = this.input.PREFIX || this.input.P;

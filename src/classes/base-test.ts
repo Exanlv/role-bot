@@ -1,10 +1,12 @@
-import { Guild, Client, TextChannel, Message } from "discord.js";
-import { RunCommandOptions } from "@classes/runcommand-options";
-import { ServerConfig } from "@classes/server-config";
-import { OutputList } from "@classes/outputList";
-import { RoleBot } from "@core/bot-roles";
+import { OutputList } from '@classes/outputList';
+import { RunCommandOptions } from '@classes/runcommand-options';
+import { ServerConfig } from '@classes/server-config';
+import { RoleBot } from '@core/bot-roles';
+import { Client, Guild, Message, TextChannel } from 'discord.js';
 
 export class BaseTest {
+
+	public roleBot: RoleBot;
 	protected name: string;
 	protected client: Client;
 
@@ -14,8 +16,6 @@ export class BaseTest {
 	protected serverConfig: ServerConfig;
 	protected rawConfig: any;
 
-	public roleBot: RoleBot;
-
 	constructor(client: Client, testServer: Guild, testChannel: TextChannel, roleBot: RoleBot) {
 		this.client = client;
 		this.testServer = testServer;
@@ -23,19 +23,20 @@ export class BaseTest {
 		this.roleBot = roleBot;
 	}
 
-	protected resultTest(testCode: string, status: boolean) {
-		if (status)
+	protected resultTest(testCode: string, status: boolean): void {
+		if (status) {
 			this.completedTest(testCode);
-		else
+		} else {
 			this.failedTest(testCode);
+		}
 	}
 
-	protected completedTest(testName: string) {
+	protected completedTest(testName: string): void {
 		console.log(`'${this.name}': Passed test '${testName}'`);
 	}
 
-	protected failedTest(testName: string) {
-		throw `'${this.name}': FAILED TEST '${testName}'`;
+	protected failedTest(testName: string): void {
+		throw new Error(`'${this.name}': FAILED TEST '${testName}'`);
 	}
 
 	protected async runCommand(command: string, options: RunCommandOptions = {}): Promise<Message|boolean> {
@@ -43,19 +44,21 @@ export class BaseTest {
 		const channel = options.channel || this.testChannel;
 		const expectedResponse = options.response;
 
-		channel.send(command)
-		const message = (await channel.awaitMessages(m => m.author.id === this.roleBot.client.user.id, {maxMatches: 1, time: time})).first() as Message || null;
+		channel.send(command);
+		const message = (await channel.awaitMessages((m: Message) => m.author.id === this.roleBot.client.user.id, {maxMatches: 1, time})).first() as Message || null;
 
-		if (!message)
+		if (!message) {
 			return false;
+		}
 
-		if (expectedResponse)
+		if (expectedResponse) {
 			return options.caseSensitive ? message.content.toLowerCase() === expectedResponse.toLowerCase() : message.content === expectedResponse;
-		
+		}
+
 		return message;
 	}
 
-	protected async simpleTest(command: string, output: string, testName: string, options: RunCommandOptions = {}) {
+	protected async simpleTest(command: string, output: string, testName: string, options: RunCommandOptions = {}): Promise<void> {
 		options.response = output;
 		if (await this.runCommand(command, options)) {
 			this.completedTest(testName);
@@ -64,7 +67,7 @@ export class BaseTest {
 		}
 	}
 
-	protected async simpleTestDoubleResponse(command: string, output: string, secondOutput: string, testName: string, options: RunCommandOptions = {}) {
+	protected async simpleTestDoubleResponse(command: string, output: string, secondOutput: string, testName: string, options: RunCommandOptions = {}): Promise<void> {
 		options.response = output;
 		if (await this.runCommand(command, options)) {
 			options.response = secondOutput;
@@ -77,7 +80,7 @@ export class BaseTest {
 		this.failedTest(testName);
 	}
 
-	protected async simpleTestList(command: string, output: Array<OutputList>, testName: string, options: RunCommandOptions = {}) {
+	protected async simpleTestList(command: string, output: OutputList[], testName: string, options: RunCommandOptions = {}): Promise<void> {
 		options.response = null;
 		const message = await this.runCommand(command, options) as Message;
 
@@ -97,7 +100,7 @@ export class BaseTest {
 	}
 }
 
-export interface UnitTest {
+export interface IUnitTest {
 	name: string;
-	runTests();
+	runTests(): Promise<void>;
 }

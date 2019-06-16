@@ -1,10 +1,11 @@
-import { BaseCommandInterface, BaseCommand } from "@classes/base-command";
-import { firstLetterUppercase } from "@core/functions";
+import { BaseCommand, IBaseCommand } from '@classes/base-command';
+import { firstLetterUppercase } from '@core/functions';
+import { Role } from 'discord.js';
 
-export class RemoveModRoleCommand extends BaseCommand implements BaseCommandInterface {
+export class RemoveModRoleCommand extends BaseCommand implements IBaseCommand {
 	public static description: string = 'Removes a mod role';
 
-	public async runCommand() {
+	public async runCommand(): Promise<void> {
 		const roleName = this.args.join(' ') || await this.getUserInput('``> enter role name``');
 
 		if (!roleName) {
@@ -12,7 +13,7 @@ export class RemoveModRoleCommand extends BaseCommand implements BaseCommandInte
 			return;
 		}
 
-		const role = this.message.guild.roles.find(r => r.name.toUpperCase() === roleName);
+		const role = this.message.guild.roles.find((r: Role) => r.name.toUpperCase() === roleName);
 
 		if (!role) {
 			this.sendMessage(`Could not remove mod-role; role \`\`${firstLetterUppercase(roleName)}\`\` does not exist`);

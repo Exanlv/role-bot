@@ -1,16 +1,17 @@
-import { BaseCommandInterface, BaseCommand } from "@classes/base-command";
-import { ListValue } from "@classes/list-value";
-import { List } from "@classes/list";
+import { BaseCommand, IBaseCommand } from '@classes/base-command';
+import { List } from '@classes/list';
+import { ListValue } from '@classes/list-value';
+import { GuildChannel } from 'discord.js';
 
-export class ListActiveChannelCommand extends BaseCommand implements BaseCommandInterface {
+export class ListActiveChannelCommand extends BaseCommand implements IBaseCommand {
 	public static description: string = 'Lists active channels';
-	
-	public runCommand() {
-		const listValue = new ListValue;
+
+	public runCommand(): void {
+		const listValue = new ListValue();
 		listValue.title = 'Active Channels';
 
-		this.serverConfig.activeChannels.forEach(activeChannel => {
-			let guildChannel = this.message.guild.channels.find(c => c.id === activeChannel);
+		this.serverConfig.activeChannels.forEach((activeChannel: string) => {
+			const guildChannel = this.message.guild.channels.find((c: GuildChannel) => c.id === activeChannel);
 
 			if (!guildChannel) {
 				this.serverConfig.removeActiveChannel(activeChannel);
@@ -24,8 +25,8 @@ export class ListActiveChannelCommand extends BaseCommand implements BaseCommand
 			return;
 		}
 
-		const list = new List;
-		list.values.push(listValue)
+		const list = new List();
+		list.values.push(listValue);
 
 		this.sendList(list);
 	}

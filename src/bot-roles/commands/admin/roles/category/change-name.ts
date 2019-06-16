@@ -1,10 +1,10 @@
-import { BaseCommandInterface, BaseCommand } from "@classes/base-command";
-import { firstLetterUppercase } from "@core/functions";
+import { BaseCommand, IBaseCommand } from '@classes/base-command';
+import { firstLetterUppercase } from '@core/functions';
 
-export class ChangeCategoryNameCommand extends BaseCommand implements BaseCommandInterface {
+export class ChangeCategoryNameCommand extends BaseCommand implements IBaseCommand {
 	public static description: string = 'Changes the name of a category';
 
-	public async runCommand() {
+	public async runCommand(): Promise<void> {
 		this.loadInput();
 
 		const oldName = this.input.OLDNAME || this.input.ON || await this.getUserInput('``> enter the name of the category you want to change``');

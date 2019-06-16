@@ -1,9 +1,9 @@
-import { BaseCommandInterface, BaseCommand } from "@classes/base-command";
+import { BaseCommand, IBaseCommand } from '@classes/base-command';
 
-export class RemoveLogChannelCommand extends BaseCommand implements BaseCommandInterface {
+export class RemoveLogChannelCommand extends BaseCommand implements IBaseCommand {
 	public static description: string = 'Unsets the log channel';
 
-	runCommand() {
+	public runCommand(): void {
 		const logChannel = this.serverConfig.logChannel;
 		this.serverConfig.setLogChannel(null);
 

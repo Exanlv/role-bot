@@ -1,25 +1,27 @@
-import { Client, Message, Guild, GuildChannel, TextChannel, RichEmbed } from 'discord.js';
+import { getCommandConfig } from '@bot-roles/command-configs';
+import { CommandConfig } from '@classes/command-config';
+import { GlobalConfig } from '@classes/global-config';
+import { MessageReactionsConfig } from '@classes/message-reactions-config';
+import { ReactionConf } from '@classes/reaction-conf';
 import { ServerConfig } from '@classes/server-config';
 import { ShortReact } from '@classes/short-react';
-import { CommandConfig } from '@classes/command-config';
-import { getCommandConfig } from '@bot-roles/command-configs';
+import { Client, DiscordAPIError, Guild, GuildChannel, GuildMember, Message, MessageReaction, RichEmbed, Role, TextChannel, User } from 'discord.js';
 import { EventEmitter } from 'events';
-import { GlobalConfig } from '@classes/global-config';
 
 export class RoleBot extends EventEmitter {
-	private token: string;
 	public client: Client;
 
 	public configs: {[id: string]: ServerConfig} = {};
 
 	public globalConfig: GlobalConfig;
+	private token: string;
 
 	private rootDir: string;
 	private dataDir: string;
 
 	constructor(token: string, rootDir: string, globalConfig: GlobalConfig) {
 		super();
-		
+
 		this.client = new Client();
 		this.token = token;
 
@@ -49,49 +51,51 @@ export class RoleBot extends EventEmitter {
 		});
 	}
 
-	private async login() {
+	private async login(): Promise<void> {
 		await this.client.login(this.token);
 	}
 
-	private addConfig(guildId: string) {
-		if (!this.configs[guildId])
+	private addConfig(guildId: string): void {
+		if (!this.configs[guildId]) {
 			this.configs[guildId] = new ServerConfig(guildId, `${this.dataDir}/configs`);
+		}
 	}
 
-	private removeConfig(guildId: string, del: boolean = false) {
+	private removeConfig(guildId: string, del: boolean = false): void {
 		if (del) {
 			this.configs[guildId].delete();
 		}
 
-		if (this.configs[guildId])
+		if (this.configs[guildId]) {
 			delete this.configs[guildId];
-	}
-
-	private loadConfigs() {
-		this.client.guilds.forEach(g => {
-			this.addConfig(g.id)
-		});
-
-		this.globalConfig.devServer = this.client.guilds.find(g => g.id === this.globalConfig.devServerId);
-
-		if (!this.globalConfig.devServer) {
-			throw('Dev server not found');
 		}
 	}
 
-	private handleOnReady() {
+	private loadConfigs(): void {
+		this.client.guilds.forEach((g: Guild) => {
+			this.addConfig(g.id);
+		});
+
+		this.globalConfig.devServer = this.client.guilds.find((g: Guild) => g.id === this.globalConfig.devServerId);
+
+		if (!this.globalConfig.devServer) {
+			throw new Error(('Dev server not found'));
+		}
+	}
+
+	private handleOnReady(): void {
 		this.client.on('ready', () => {
 			console.log(`Logged in as ${this.client.user.tag}`);
 		});
 	}
 
-	private handleOnError() {
-		this.client.on('error', error => {
+	private handleOnError(): void {
+		this.client.on('error', (error: Error) => {
 			console.log(error);
 		});
 	}
 
-	private handleOnMessage() {
+	private handleOnMessage(): void {
 		this.client.on('message', async (message: Message) => {
 			if (message.author.id === this.client.user.id || !message.guild) {
 				return;
@@ -120,7 +124,7 @@ export class RoleBot extends EventEmitter {
 				}
 
 				for (let i = 0; i < config.adminRoles.length; i++) {
-					if (message.member.roles.find(r => r.id === config.adminRoles[i])) {
+					if (message.member.roles.find((r: Role) => r.id === config.adminRoles[i])) {
 						confirmedAdmin = true;
 						break;
 					}
@@ -154,43 +158,43 @@ export class RoleBot extends EventEmitter {
 		});
 	}
 
-	private handleOnGuildCreate() {
+	private handleOnGuildCreate(): void {
 		this.client.on('guildCreate', (guild: Guild) => {
 			this.addConfig(guild.id);
 		});
 	}
 
-	private handleOnGuildDelete() {
+	private handleOnGuildDelete(): void {
 		this.client.on('guildDelete', (guild: Guild) => {
 			this.removeConfig(guild.id, true);
 		});
 	}
 
-	private handleOnRawMessageReacts() {
+	private handleOnRawMessageReacts(): void {
 		const events = {
 			MESSAGE_REACTION_ADD: 'CustomReactAdd',
-			MESSAGE_REACTION_REMOVE: 'CustomReactRemove'
+			MESSAGE_REACTION_REMOVE: 'CustomReactRemove',
 		};
-		
-		this.client.on('raw', async event => {
-			if (!events.hasOwnProperty(event.t)) return;
-		
-			const shortReact = new ShortReact;
-		
+
+		this.client.on('raw', async (event: any) => {
+			if (!events.hasOwnProperty(event.t)) { return; }
+
+			const shortReact = new ShortReact();
+
 			if (!event.d.guild_id) {
 				return;
 			}
-		
-			shortReact.guild = this.client.guilds.find(g => g.id === event.d.guild_id);
-			shortReact.member = shortReact.guild.members.find(m => m.id === event.d.user_id);
+
+			shortReact.guild = this.client.guilds.find((g: Guild) => g.id === event.d.guild_id);
+			shortReact.member = shortReact.guild.members.find((m: GuildMember) => m.id === event.d.user_id);
 			shortReact.messageId = event.d.message_id;
 			shortReact.emoteIdentifier = event.d.emoji.id ? `${event.d.emoji.name.split('~')[0]}:${event.d.emoji.id}` : event.d.emoji.name;
-		
+
 			this.client.emit(events[event.t], shortReact);
 		});
 	}
 
-	private handleOnCustomReactAdd() {
+	private handleOnCustomReactAdd(): void {
 		this.client.on('CustomReactAdd', (reaction: ShortReact) => {
 			if (reaction.member.id === this.client.user.id) {
 				return;
@@ -204,20 +208,20 @@ export class RoleBot extends EventEmitter {
 				return;
 			}
 
-			const guildRole = reaction.guild.roles.find(r => r.id === reactRole);
+			const guildRole = reaction.guild.roles.find((r: Role) => r.id === reactRole);
 
 			if (!guildRole) {
-				config.selfAssign.handleRemovedRole(reactRole)
+				config.selfAssign.handleRemovedRole(reactRole);
 				return;
 			}
 
-			reaction.member.addRole(guildRole).catch(e => {
+			reaction.member.addRole(guildRole).catch((e: DiscordAPIError) => {
 				// this.handleError
 			});
 		});
 	}
 
-	private handleOnCustomReactRemove() {
+	private handleOnCustomReactRemove(): void {
 		this.client.on('CustomReactRemove', (reaction: ShortReact) => {
 			const config = this.configs[reaction.guild.id];
 
@@ -232,7 +236,7 @@ export class RoleBot extends EventEmitter {
 				return;
 			}
 
-			const guildRole = reaction.guild.roles.find(r => r.id === reactRole);
+			const guildRole = reaction.guild.roles.find((r: Role) => r.id === reactRole);
 
 			if (!guildRole) {
 				config.selfAssign.handleRemovedRole(reactRole);
@@ -243,14 +247,14 @@ export class RoleBot extends EventEmitter {
 		});
 	}
 
-	private handleOnChannelDelete() {
+	private handleOnChannelDelete(): void {
 		this.client.on('channelDelete', (channel: GuildChannel) => {
 			if (!channel.guild.id) {
 				return;
 			}
 
 			const config = this.configs[channel.guild.id];
-			
+
 			if (config.isActiveChannel(channel.id)) {
 				config.removeActiveChannel(channel.id);
 			}
@@ -259,16 +263,16 @@ export class RoleBot extends EventEmitter {
 		});
 	}
 
-	private handleOnRoleDelete() {
-		this.client.on('roleDelete', role => {
+	private handleOnRoleDelete(): void {
+		this.client.on('roleDelete', (role: Role) => {
 			const config = this.configs[role.guild.id];
 
 			config.selfAssign.handleRemovedRole(role.id);
 		});
 	}
 
-	private handleOnRawMessageDelete() {
-		this.client.on('raw', raw => {
+	private handleOnRawMessageDelete(): void {
+		this.client.on('raw', (raw: any) => {
 			if (raw.t === 'MESSAGE_DELETE') {
 				if (!raw.d.guild_id) {
 					return;
@@ -280,12 +284,12 @@ export class RoleBot extends EventEmitter {
 		});
 	}
 
-	private handleOnGuildMemberAdd() {
-		this.client.on('guildMemberAdd', guildMember => {
+	private handleOnGuildMemberAdd(): void {
+		this.client.on('guildMemberAdd', (guildMember: GuildMember) => {
 			const config = this.configs[guildMember.guild.id];
 
-			config.selfAssign.getAllReactions().forEach(async messageReactionsConfig => {
-				const channel = guildMember.guild.channels.find(c => c.id === messageReactionsConfig.channelId) as TextChannel;
+			config.selfAssign.getAllReactions().forEach(async (messageReactionsConfig: MessageReactionsConfig) => {
+				const channel = guildMember.guild.channels.find((c: GuildChannel) => c.id === messageReactionsConfig.channelId) as TextChannel;
 
 				if (!channel) {
 					config.selfAssign.handleRemovedChannel(messageReactionsConfig.channelId);
@@ -299,31 +303,31 @@ export class RoleBot extends EventEmitter {
 					return;
 				}
 
-				message.reactions.tap(async reaction => {
-					const role = messageReactionsConfig.reactions.find(e => e.emoteIdentifier === (reaction.emoji.id ? reaction.emoji.identifier.toUpperCase() : reaction.emoji.name));
+				message.reactions.tap(async (reaction: MessageReaction) => {
+					const role = messageReactionsConfig.reactions.find((e: ReactionConf) => e.emoteIdentifier === (reaction.emoji.id ? reaction.emoji.identifier.toUpperCase() : reaction.emoji.name));
 					if (role) {
-						const guildRole = guildMember.guild.roles.find(r => r.id === role.roleId);
+						const guildRole = guildMember.guild.roles.find((r: Role) => r.id === role.roleId);
 
 						if (!guildRole) {
 							config.selfAssign.handleRemovedRole(role.roleId);
 							return;
 						}
-						
-						if ((await reaction.fetchUsers(reaction.count)).find(u => u.id === guildMember.id)) {
+
+						if ((await reaction.fetchUsers(reaction.count)).find((u: User) => u.id === guildMember.id)) {
 							guildMember.addRole(guildRole);
 						}
 					}
 				});
 			});
-		})
+		});
 	}
 
-	private handleOnCommand() {
+	private handleOnCommand(): void {
 		this.client.on('command', (message: Message) => {
 			const config = this.configs[message.guild.id];
 
 			if (config.logChannel) {
-				const logChannel = message.guild.channels.find(c => c.id === config.logChannel) as TextChannel;
+				const logChannel = message.guild.channels.find((c: TextChannel) => c.id === config.logChannel) as TextChannel;
 
 				if (!logChannel) {
 					config.setLogChannel(null);
@@ -340,6 +344,6 @@ export class RoleBot extends EventEmitter {
 				;
 				logChannel.send(embed);
 			}
-		})
+		});
 	}
 }

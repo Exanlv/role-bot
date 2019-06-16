@@ -1,51 +1,51 @@
-import { FileConfig } from "@classes/file";
-import { FolderConfig } from "@classes/folder";
+import { FileConfig } from '@classes/file';
+import { FolderConfig } from '@classes/folder';
 
-export const mainBotDirs: Array<FolderConfig> = [
+export const mainBotDirs: FolderConfig[] = [
 	{
-		path: '/data'
+		path: '/data',
 	},
 	{
-		path: '/data/configs'
+		path: '/data/configs',
 	},
 	{
-		path: '/settings'
+		path: '/settings',
 	},
 	{
-		path: '/settings/tokens'
-	}
+		path: '/settings/tokens',
+	},
 ];
 
-export const mainBotFiles: Array<FileConfig> = [
+export const mainBotFiles: FileConfig[] = [
 	{
 		path: '/settings/dev.txt',
 		defaultValue: 'true',
-		required: true
+		required: true,
 	},
 	{
 		path: '/settings/prefix-admin.txt',
 		defaultValue: '!RB ',
-		required: true
+		required: true,
 	},
 	{
 		path: '/settings/accent-color.txt',
 		defaultValue: '$D ',
-		required: true
+		required: true,
 	},
 	{
 		path: '/settings/developers.txt',
 		defaultValue: '',
-		required: false
+		required: false,
 	},
 	{
 		path: '/settings/server-dev.txt',
 		defaultValue: '',
 		required: true,
-		description: 'Server ID of (private) server the bot will use to output some stuff'
+		description: 'Server ID of (private) server the bot will use to output some stuff',
 	},
 	{
 		path: '/settings/tokens/main.txt',
 		defaultValue: '',
-		required: true
-	}
-]
+		required: true,
+	},
+];

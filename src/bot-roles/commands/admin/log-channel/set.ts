@@ -1,9 +1,9 @@
-import { BaseCommandInterface, BaseCommand } from "@classes/base-command";
+import { BaseCommand, IBaseCommand } from '@classes/base-command';
 
-export class SetLogChannelCommand extends BaseCommand implements BaseCommandInterface {
+export class SetLogChannelCommand extends BaseCommand implements IBaseCommand {
 	public static description: string = 'Sets the log channel';
 
-	public runCommand() {
+	public runCommand(): void {
 		const channel = this.message.mentions.channels.first();
 
 		if (!channel) {

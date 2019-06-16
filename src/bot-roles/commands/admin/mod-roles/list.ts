@@ -1,16 +1,17 @@
-import { BaseCommandInterface, BaseCommand } from "@classes/base-command";
-import { ListValue } from "@classes/list-value";
-import { List } from "@classes/list";
+import { BaseCommand, IBaseCommand } from '@classes/base-command';
+import { List } from '@classes/list';
+import { ListValue } from '@classes/list-value';
+import { Role } from 'discord.js';
 
-export class ListModRoleCommand extends BaseCommand implements BaseCommandInterface {
+export class ListModRoleCommand extends BaseCommand implements IBaseCommand {
 	public static description: string = 'Lists the current mod roles';
 
-	public runCommand() {
-		let listValue = new ListValue;
-		listValue.title = 'Mod roles'
+	public runCommand(): void {
+		const listValue = new ListValue();
+		listValue.title = 'Mod roles';
 
-		this.serverConfig.adminRoles.forEach(adminRole => {
-			const role = this.message.guild.roles.find(r => r.id === adminRole);
+		this.serverConfig.adminRoles.forEach((adminRole: string) => {
+			const role = this.message.guild.roles.find((r: Role) => r.id === adminRole);
 
 			if (!role) {
 				this.serverConfig.adminRoles.splice(this.serverConfig.adminRoles.indexOf(adminRole, 1));
@@ -25,7 +26,7 @@ export class ListModRoleCommand extends BaseCommand implements BaseCommandInterf
 			return;
 		}
 
-		const list = new List;
+		const list = new List();
 		list.values.push(listValue);
 
 		this.sendList(list);

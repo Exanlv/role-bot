@@ -1,14 +1,14 @@
 import { FileConfig } from '@classes/file';
-import { existsSync, writeFileSync, readFileSync, mkdirSync } from 'fs';
 import { FolderConfig } from '@classes/folder';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 
 export function getBaseDir(): string {
-	let dir = __dirname.replace(/\\/g, '/').split('/');
+	const dir = __dirname.replace(/\\/g, '/').split('/');
 	dir.splice(dir.length - 2, 2);
 	return dir.join('/');
 }
 
-export function loadDirs(dirs: Array<FolderConfig>): void {
+export function loadDirs(dirs: FolderConfig[]): void {
 	const baseDir = getBaseDir();
 	for (let i = 0; i < dirs.length; i++) {
 		if (!existsSync(baseDir + dirs[i].path)) {
@@ -17,9 +17,9 @@ export function loadDirs(dirs: Array<FolderConfig>): void {
 	}
 }
 
-export function loadFiles(files: Array<FileConfig>): void {
+export function loadFiles(files: FileConfig[]): void {
 	const baseDir = getBaseDir();
-	const missingFiles: Array<FileConfig> = [];
+	const missingFiles: FileConfig[] = [];
 
 	for (let i = 0; i < files.length; i++) {
 		if (!existsSync(baseDir + files[i].path)) {
@@ -38,9 +38,9 @@ export function loadFiles(files: Array<FileConfig>): void {
 	if (missingFiles.length) {
 		console.log('Configure the following file(s):');
 		for (let i = 0; i < missingFiles.length; i++) {
-			console.log(`- ${missingFiles[i].path}${missingFiles[i].description ? `: ${missingFiles[i].description}` : ''}`)
+			console.log(`- ${missingFiles[i].path}${missingFiles[i].description ? `: ${missingFiles[i].description}` : ''}`);
 		}
 
-		throw('MISSING FILES');
+		throw new Error(('MISSING FILES'));
 	}
 }

@@ -1,10 +1,10 @@
-import { BaseCommandInterface } from "@classes/base-command";
-import { GeneralHelpCommand } from "@bot-roles/commands/help-command";
+import { GeneralHelpCommand } from '@bot-roles/commands/help-command';
+import { IBaseCommand } from '@classes/base-command';
 
-export class PublicHelpCommand extends GeneralHelpCommand implements BaseCommandInterface {
+export class PublicHelpCommand extends GeneralHelpCommand implements IBaseCommand {
 	public static description: string = 'Brings up this menu';
 
-	public runCommand() {
+	public runCommand(): void {
 		super.runCommand('public');
 	}
-} 
+}

@@ -1,4 +1,4 @@
-import { TextChannel } from "discord.js";
+import { TextChannel } from 'discord.js';
 
 export class RunCommandOptions {
 	public response?: string;

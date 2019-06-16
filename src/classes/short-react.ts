@@ -1,4 +1,4 @@
-import { Guild, GuildMember } from "discord.js";
+import { Guild, GuildMember } from 'discord.js';
 
 export class ShortReact {
 	public guild: Guild;

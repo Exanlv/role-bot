@@ -1,13 +1,15 @@
-import { RoleCategory } from "@classes/role-category";
-import { RoleConfig } from "@classes/role-config";
-import { RoleReact } from "@classes/role-react";
-import { MessageReactionsConfig, ReactionConf } from "@classes/message-reactions-config";
-import { EventEmitter } from "events";
+import { MessageReactionsConfig } from '@classes/message-reactions-config';
+import { RoleCategory } from '@classes/role-category';
+import { RoleConfig } from '@classes/role-config';
+import { RoleReact } from '@classes/role-react';
+import { Role } from 'discord.js';
+import { EventEmitter } from 'events';
+import { ReactionConf } from '@classes/reaction-conf';
 
 export class SelfAssign extends EventEmitter {
-	private roles: Array<RoleCategory> = [];
+	private roles: RoleCategory[] = [];
 
-	constructor(data?: Array<RoleCategory>) {
+	constructor(data?: RoleCategory[]) {
 		super();
 
 		if (data) {
@@ -19,7 +21,7 @@ export class SelfAssign extends EventEmitter {
 	/**
 	 * Returns the roles as a raw array
 	 */
-	public raw(): Array<RoleCategory> {
+	public raw(): RoleCategory[] {
 		return this.roles;
 	}
 
@@ -28,7 +30,7 @@ export class SelfAssign extends EventEmitter {
 	 * @param categoryName The name of the category
 	 */
 	public getCategory(categoryName: string): RoleCategory {
-		return this.roles.find(c => c.name === categoryName.toUpperCase());
+		return this.roles.find((c: RoleCategory) => c.name === categoryName.toUpperCase());
 	}
 
 	/**
@@ -43,8 +45,8 @@ export class SelfAssign extends EventEmitter {
 	 * Adds a category
 	 * @param categoryName the category to add
 	 */
-	public addCategory(categoryName): void {
-		const newCategory = new RoleCategory;
+	public addCategory(categoryName: string): void {
+		const newCategory = new RoleCategory();
 		newCategory.name = categoryName;
 		this.roles.push(newCategory);
 		this.emit('ValuesChanged');
@@ -58,15 +60,6 @@ export class SelfAssign extends EventEmitter {
 		const category = this.getCategory(categoryName);
 		this.roles.splice(this.roles.indexOf(category), 1);
 		this.emit('ValuesChanged');
-	}
-
-	/**
-	 * Gets the role from a specified category
-	 * @param categoryName the category you want to check
-	 * @param roleId the ID of the role
-	 */
-	protected getRoleInCategory(categoryName: string, roleId: string): RoleConfig {
-		return this.getCategory(categoryName).roles.find(r => r.id === roleId);
 	}
 
 	/**
@@ -85,7 +78,7 @@ export class SelfAssign extends EventEmitter {
 	 */
 	public addRole(categoryName: string, roleId: string): void {
 		const category = this.getCategory(categoryName);
-		const newRole = new RoleConfig;
+		const newRole = new RoleConfig();
 		newRole.id = roleId;
 		this.roles[this.roles.indexOf(category)].roles.push(newRole);
 		this.emit('ValuesChanged');
@@ -98,8 +91,8 @@ export class SelfAssign extends EventEmitter {
 	 */
 	public removeRole(categoryName: string, roleId: string): void {
 		const category = this.getCategory(categoryName);
-		const role = category.roles.find(r => r.id === roleId);
-		const categoryIndex = this.roles.indexOf(category); 
+		const role = category.roles.find((r: RoleConfig) => r.id === roleId);
+		const categoryIndex = this.roles.indexOf(category);
 		this.roles[categoryIndex].roles.splice(this.roles[categoryIndex].roles.indexOf(role), 1);
 		this.emit('ValuesChanged');
 	}
@@ -108,11 +101,12 @@ export class SelfAssign extends EventEmitter {
 	 * Checks if a role is self-assignable
 	 * @param roleId the ID of the role
 	 */
-	public isSelfAssignable(roleId): boolean {
+	public isSelfAssignable(roleId: string): boolean {
 		for (let i = 0; i < this.roles.length; i++) {
 			for (let j = 0; j < this.roles[i].roles.length; j++) {
-				if (this.roles[i].roles[j].id === roleId)
+				if (this.roles[i].roles[j].id === roleId) {
 					return true;
+				}
 			}
 		}
 
@@ -127,9 +121,10 @@ export class SelfAssign extends EventEmitter {
 	public emoteExists(messageId: string, emote: string): boolean {
 		for (let i = 0; i < this.roles.length; i++) {
 			for (let j = 0; j < this.roles[i].roles.length; j++) {
-				let emoteReact = this.roles[i].roles[j].emoteReacts.find(e => e.messageId === messageId && e.emote === emote);
-				if (emoteReact)
+				const emoteReact = this.roles[i].roles[j].emoteReacts.find((e: RoleReact) => e.messageId === messageId && e.emote === emote);
+				if (emoteReact) {
 					return true;
+				}
 			}
 		}
 		return false;
@@ -142,7 +137,7 @@ export class SelfAssign extends EventEmitter {
 	 * @param messageId The id of the message
 	 * @param emote The emote identifier
 	 */
-	public addEmote(categoryName: string, roleId: string, messageId: string, channelId: string, emote: string) {
+	public addEmote(categoryName: string, roleId: string, messageId: string, channelId: string, emote: string): void {
 		const categoryIndex = this.roles.indexOf(this.getCategory(categoryName));
 		for (let i = 0; i < this.roles[categoryIndex].roles.length; i++) {
 			if (this.roles[categoryIndex].roles[i].id === roleId) {
@@ -159,18 +154,18 @@ export class SelfAssign extends EventEmitter {
 	 * @param roleId Id of the role
 	 * @param indexes Which index in the array to remove
 	 */
-	public removeEmotes(categoryName: string, roleId: string, indexes: Array<number>): Array<MessageReactionsConfig> {
-		indexes.sort((a, b) => b-a);
+	public removeEmotes(categoryName: string, roleId: string, indexes: number[]): MessageReactionsConfig[] {
+		indexes.sort((a: number, b: number) => b - a);
 
 		const configToRemove = {};
 		const categoryIndex = this.roles.indexOf(this.getCategory(categoryName));
 		for (let i = 0; i < this.roles[categoryIndex].roles.length; i++) {
 			if (this.roles[categoryIndex].roles[i].id === roleId) {
-				indexes.forEach(index => {
-					if(index > this.roles[categoryIndex].roles[i].emoteReacts.length) {
+				indexes.forEach((index: number) => {
+					if (index > this.roles[categoryIndex].roles[i].emoteReacts.length) {
 						return;
 					}
-					let id = `${this.roles[categoryIndex].roles[i].emoteReacts[index - 1].messageId}|${this.roles[categoryIndex].roles[i].emoteReacts[index - 1].channelId}`
+					const id = `${this.roles[categoryIndex].roles[i].emoteReacts[index - 1].messageId}|${this.roles[categoryIndex].roles[i].emoteReacts[index - 1].channelId}`;
 					if (!configToRemove[id]) {
 						configToRemove[id] = [];
 					}
@@ -181,9 +176,9 @@ export class SelfAssign extends EventEmitter {
 		}
 
 		const messageReactionsConfig = [];
-		for (let id in configToRemove) {
-			let messageReactionsConf = new MessageReactionsConfig();
-			let idSplit = id.split('|');
+		for (const id in configToRemove) {
+			const messageReactionsConf = new MessageReactionsConfig();
+			const idSplit = id.split('|');
 			messageReactionsConf.messageId = idSplit[0];
 			messageReactionsConf.channelId = idSplit[1];
 			messageReactionsConf.reactions = configToRemove[id];
@@ -193,19 +188,19 @@ export class SelfAssign extends EventEmitter {
 		this.emit('ValuesChanged');
 		return messageReactionsConfig;
 	}
-	
+
 	/**
 	 * Gets the role ID associated with a role react config
 	 * @param messageId the ID of the message
 	 * @param emoteIdentifier Emote identifier or name in case of unicode emojis
 	 */
-	public getReactRole(messageId, emoteIdentifier) {
+	public getReactRole(messageId: string, emoteIdentifier: string): string {
 		const categorys = this.getCategories();
 
 		for (let i = 0; i < categorys.length; i++) {
-			let category = this.getCategory(categorys[i]);
+			const category = this.getCategory(categorys[i]);
 			for (let j = 0; j < category.roles.length; j++) {
-				if (category.roles[j].emoteReacts.find(e => e.emote === emoteIdentifier && e.messageId === messageId)) {
+				if (category.roles[j].emoteReacts.find((e: RoleReact) => e.emote === emoteIdentifier && e.messageId === messageId)) {
 					return category.roles[j].id;
 				}
 			}
@@ -215,9 +210,9 @@ export class SelfAssign extends EventEmitter {
 	/**
 	 * Returns all category names
 	 */
-	public getCategories(): Array<string> {
+	public getCategories(): string[] {
 		const categories = [];
-		for(let i = 0; i < this.roles.length; i++) {
+		for (let i = 0; i < this.roles.length; i++) {
 			categories.push(this.roles[i].name);
 		}
 		return categories;
@@ -241,7 +236,7 @@ export class SelfAssign extends EventEmitter {
 	 * Removes everything associated with a channel id
 	 * @param channelId The id of the channel
 	 */
-	public handleRemovedChannel(channelId) {
+	public handleRemovedChannel(channelId: string): void {
 		for (let i = 0; i < this.roles.length; i++) {
 			for (let j = 0; j < this.roles[i].roles.length; j++) {
 				for (let k = 0; k < this.roles[i].roles[j].emoteReacts.length; k++) {
@@ -258,7 +253,7 @@ export class SelfAssign extends EventEmitter {
 	 * Removes everything associated with a message id
 	 * @param messageId The id of the message
 	 */
-	public handleRemovedMessage(messageId) {
+	public handleRemovedMessage(messageId: string): void {
 		for (let i = 0; i < this.roles.length; i++) {
 			for (let j = 0; j < this.roles[i].roles.length; j++) {
 				for (let k = 0; k < this.roles[i].roles[j].emoteReacts.length; k++) {
@@ -275,7 +270,7 @@ export class SelfAssign extends EventEmitter {
 	 * Removes everything associated with the id of a role
 	 * @param roleId The id of the role
 	 */
-	public handleRemovedRole(roleId) {
+	public handleRemovedRole(roleId: string): void {
 		for (let i = 0; i < this.roles.length; i++) {
 			for (let j = 0; j < this.roles[i].roles.length; j ++) {
 				if (this.roles[i].roles[j].id === roleId) {
@@ -289,24 +284,24 @@ export class SelfAssign extends EventEmitter {
 	/**
 	 * Gets all reactions
 	 */
-	public getAllReactions(): Array<MessageReactionsConfig> {
+	public getAllReactions(): MessageReactionsConfig[] {
 		const messageReactions = {};
-		this.roles.forEach(category => {
-			category.roles.forEach(role => {
-				role.emoteReacts.forEach(emoteReact => {
+		this.roles.forEach((category: RoleCategory) => {
+			category.roles.forEach((role: RoleConfig) => {
+				role.emoteReacts.forEach((emoteReact: RoleReact) => {
 					const id = `${emoteReact.messageId}|${emoteReact.channelId}`;
 					if (!messageReactions[id]) {
 						messageReactions[id] = [];
 					}
 					messageReactions[id].push(new ReactionConf(emoteReact.emote, role.id));
-				})
+				});
 			});
 		});
 
 		const messageReactionsConfig = [];
-		for (let id in messageReactions) {
-			let messageReactionsConf = new MessageReactionsConfig();
-			let idSplit = id.split('|');
+		for (const id in messageReactions) {
+			const messageReactionsConf = new MessageReactionsConfig();
+			const idSplit = id.split('|');
 			messageReactionsConf.messageId = idSplit[0];
 			messageReactionsConf.channelId = idSplit[1];
 			messageReactionsConf.reactions = messageReactions[id];
@@ -321,7 +316,7 @@ export class SelfAssign extends EventEmitter {
 	 * @param emoteIdentifier The identifier of the emote
 	 * @param messageId The id of the message
 	 */
-	public handleReactionRemove(emoteIdentifier, messageId) {
+	public handleReactionRemove(emoteIdentifier: string, messageId: string): void {
 		for (let i = 0; i < this.roles.length; i++) {
 			for (let j = 0; j < this.roles[i].roles.length; j++) {
 				for (let k = 0; k < this.roles[i].roles[j].emoteReacts.length; k++) {
@@ -339,10 +334,19 @@ export class SelfAssign extends EventEmitter {
 	 * @param categoryOne first category
 	 * @param categoryTwo second category
 	 */
-	public swapCategories(categoryOne: RoleCategory, categoryTwo: RoleCategory) {
+	public swapCategories(categoryOne: RoleCategory, categoryTwo: RoleCategory): void {
 		const indexes = [this.roles.indexOf(categoryOne), this.roles.indexOf(categoryTwo)];
 		this.roles[indexes[0]] = categoryTwo;
 		this.roles[indexes[1]] = categoryOne;
 		this.emit('ValuesChanged');
+	}
+
+	/**
+	 * Gets the role from a specified category
+	 * @param categoryName the category you want to check
+	 * @param roleId the ID of the role
+	 */
+	protected getRoleInCategory(categoryName: string, roleId: string): RoleConfig {
+		return this.getCategory(categoryName).roles.find((r: RoleConfig) => r.id === roleId);
 	}
 }

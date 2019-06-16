@@ -1,14 +1,14 @@
-import { FolderConfig } from "@classes/folder";
-import { FileConfig } from "@classes/file";
+import { FileConfig } from '@classes/file';
+import { FolderConfig } from '@classes/folder';
 
-export const testingBotDirs: Array<FolderConfig> = [
+export const testingBotDirs: FolderConfig[] = [
 
 ];
 
-export const testingBotFiles: Array<FileConfig> = [
+export const testingBotFiles: FileConfig[] = [
 	{
 		path: '/settings/tokens/testing.txt',
 		defaultValue: '',
-		required: true
-	}
-]
+		required: true,
+	},
+];

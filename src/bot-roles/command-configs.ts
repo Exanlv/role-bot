@@ -1,39 +1,39 @@
-import { CommandConfigs } from '@classes/commands-config';
-import { CommandConfig } from '@classes/command-config';
-import { EvalCommand } from '@bot-roles/commands/dev/eval-command';
-import { PublicHelpCommand } from '@bot-roles/commands/public/help-command';
-import { ListLogChannelCommand } from '@bot-roles/commands/admin/log-channel/list';
-import { SetLogChannelCommand } from '@bot-roles/commands/admin/log-channel/set';
-import { RemoveLogChannelCommand } from '@bot-roles/commands/admin/log-channel/remove';
-import { ListRoleCommand } from '@bot-roles/commands/admin/roles/role/list';
-import { AddRoleCommand } from '@bot-roles/commands/admin/roles/role/add';
-import { RemoveRoleCommand } from '@bot-roles/commands/admin/roles/role/remove';
-import { ListEmoteCommand } from '@bot-roles/commands/admin/roles/emote/list';
-import { AddEmoteCommand } from '@bot-roles/commands/admin/roles/emote/add';
-import { RemoveEmoteCommand } from '@bot-roles/commands/admin/roles/emote/remove';
-import { ListCategoryCommand } from '@bot-roles/commands/admin/roles/category/list';
-import { AddCategoryCommand } from '@bot-roles/commands/admin/roles/category/add';
-import { RemoveCategoryCommand } from '@bot-roles/commands/admin/roles/category/remove';
-import { ChangeCategoryNameCommand } from '@bot-roles/commands/admin/roles/category/change-name';
-import { CategorySwapCommand } from '@bot-roles/commands/admin/roles/category/swap';
-import { ListActiveChannelCommand } from '@bot-roles/commands/admin/active-channels/list';
 import { AddActiveChannelCommand } from '@bot-roles/commands/admin/active-channels/add';
+import { ListActiveChannelCommand } from '@bot-roles/commands/admin/active-channels/list';
 import { RemoveActiveChannelCommand } from '@bot-roles/commands/admin/active-channels/remove';
-import { ListModRoleCommand } from '@bot-roles/commands/admin/mod-roles/list';
+import { AdminHelpCommand } from '@bot-roles/commands/admin/help-command';
+import { ListLogChannelCommand } from '@bot-roles/commands/admin/log-channel/list';
+import { RemoveLogChannelCommand } from '@bot-roles/commands/admin/log-channel/remove';
+import { SetLogChannelCommand } from '@bot-roles/commands/admin/log-channel/set';
 import { AddModRoleCommand } from '@bot-roles/commands/admin/mod-roles/add';
+import { ListModRoleCommand } from '@bot-roles/commands/admin/mod-roles/list';
 import { RemoveModRoleCommand } from '@bot-roles/commands/admin/mod-roles/remove';
 import { PrefixCommand } from '@bot-roles/commands/admin/prefix/prefix';
 import { SetPrefixCommand } from '@bot-roles/commands/admin/prefix/set';
-import { RolesCommand } from '@bot-roles/commands/public/roles/roles';
+import { AddCategoryCommand } from '@bot-roles/commands/admin/roles/category/add';
+import { ChangeCategoryNameCommand } from '@bot-roles/commands/admin/roles/category/change-name';
+import { ListCategoryCommand } from '@bot-roles/commands/admin/roles/category/list';
+import { RemoveCategoryCommand } from '@bot-roles/commands/admin/roles/category/remove';
+import { CategorySwapCommand } from '@bot-roles/commands/admin/roles/category/swap';
+import { AddEmoteCommand } from '@bot-roles/commands/admin/roles/emote/add';
+import { ListEmoteCommand } from '@bot-roles/commands/admin/roles/emote/list';
+import { RemoveEmoteCommand } from '@bot-roles/commands/admin/roles/emote/remove';
+import { AddRoleCommand } from '@bot-roles/commands/admin/roles/role/add';
+import { ListRoleCommand } from '@bot-roles/commands/admin/roles/role/list';
+import { RemoveRoleCommand } from '@bot-roles/commands/admin/roles/role/remove';
+import { EvalCommand } from '@bot-roles/commands/dev/eval-command';
+import { PublicHelpCommand } from '@bot-roles/commands/public/help-command';
 import { GetRoleCommand } from '@bot-roles/commands/public/roles/get-role';
-import { AdminHelpCommand } from '@bot-roles/commands/admin/help-command';
+import { RolesCommand } from '@bot-roles/commands/public/roles/roles';
+import { CommandConfig } from '@classes/command-config';
+import { CommandConfigs } from '@classes/commands-config';
 
 export const COMMANDCONFIGS: CommandConfigs = {
 	dev: [
 		new CommandConfig(
 			['EVAL', 'E'],
-			EvalCommand
-		)
+			EvalCommand,
+		),
 	],
 	admin: [
 		new CommandConfig(
@@ -42,17 +42,17 @@ export const COMMANDCONFIGS: CommandConfigs = {
 			[
 				new CommandConfig(
 					['SET', 'S'],
-					SetLogChannelCommand
+					SetLogChannelCommand,
 				),
 				new CommandConfig(
 					['REMOVE', 'R'],
-					RemoveLogChannelCommand
+					RemoveLogChannelCommand,
 				),
 				new CommandConfig(
 					['LIST', 'L'],
-					ListLogChannelCommand
-				)
-			]
+					ListLogChannelCommand,
+				),
+			],
 		),
 		new CommandConfig(
 			['SELF-ASSIGN', 'SA'],
@@ -64,17 +64,17 @@ export const COMMANDCONFIGS: CommandConfigs = {
 					[
 						new CommandConfig(
 							['ADD', 'A'],
-							AddRoleCommand
+							AddRoleCommand,
 						),
 						new CommandConfig(
 							['REMOVE', 'R'],
-							RemoveRoleCommand
+							RemoveRoleCommand,
 						),
 						new CommandConfig(
 							['LIST', 'L'],
-							ListRoleCommand
-						)
-					]
+							ListRoleCommand,
+						),
+					],
 				),
 				new CommandConfig(
 					['EMOTE', 'E'],
@@ -82,17 +82,17 @@ export const COMMANDCONFIGS: CommandConfigs = {
 					[
 						new CommandConfig(
 							['ADD', 'A'],
-							AddEmoteCommand
+							AddEmoteCommand,
 						),
 						new CommandConfig(
 							['REMOVE', 'R'],
-							RemoveEmoteCommand
+							RemoveEmoteCommand,
 						),
 						new CommandConfig(
 							['LIST', 'L'],
-							ListEmoteCommand
-						)
-					]
+							ListEmoteCommand,
+						),
+					],
 				),
 				new CommandConfig(
 					['CATEGORY', 'C'],
@@ -100,27 +100,27 @@ export const COMMANDCONFIGS: CommandConfigs = {
 					[
 						new CommandConfig(
 							['ADD', 'A'],
-							AddCategoryCommand
+							AddCategoryCommand,
 						),
 						new CommandConfig(
 							['REMOVE', 'R'],
-							RemoveCategoryCommand
+							RemoveCategoryCommand,
 						),
 						new CommandConfig(
 							['LIST', 'L'],
-							ListCategoryCommand
+							ListCategoryCommand,
 						),
 						new CommandConfig(
 							['SWAP', 'S'],
-							CategorySwapCommand
+							CategorySwapCommand,
 						),
 						new CommandConfig(
 							['CHANGE', 'C'],
-							ChangeCategoryNameCommand
-						)
-					]
-				)
-			]
+							ChangeCategoryNameCommand,
+						),
+					],
+				),
+			],
 		),
 		new CommandConfig(
 			['ACTIVE-CHANNELS', 'AC'],
@@ -128,17 +128,17 @@ export const COMMANDCONFIGS: CommandConfigs = {
 			[
 				new CommandConfig(
 					['ADD', 'A'],
-					AddActiveChannelCommand
+					AddActiveChannelCommand,
 				),
 				new CommandConfig(
 					['REMOVE', 'R'],
-					RemoveActiveChannelCommand
+					RemoveActiveChannelCommand,
 				),
 				new CommandConfig(
 					['LIST', 'L'],
-					ListActiveChannelCommand
-				)
-			]
+					ListActiveChannelCommand,
+				),
+			],
 		),
 		new CommandConfig(
 			['MOD-ROLES', 'MR'],
@@ -146,17 +146,17 @@ export const COMMANDCONFIGS: CommandConfigs = {
 			[
 				new CommandConfig(
 					['ADD', 'A'],
-					AddModRoleCommand
+					AddModRoleCommand,
 				),
 				new CommandConfig(
 					['REMOVE', 'R'],
-					RemoveModRoleCommand
+					RemoveModRoleCommand,
 				),
 				new CommandConfig(
 					['LIST', 'L'],
-					ListModRoleCommand
-				)
-			]
+					ListModRoleCommand,
+				),
+			],
 		),
 		new CommandConfig(
 			['PREFIX', 'P'],
@@ -164,54 +164,54 @@ export const COMMANDCONFIGS: CommandConfigs = {
 			[
 				new CommandConfig(
 					['SET', 'S'],
-					SetPrefixCommand
-				)
-			]
+					SetPrefixCommand,
+				),
+			],
 		),
 		new CommandConfig(
 			['HELP'],
-			AdminHelpCommand
-		)
+			AdminHelpCommand,
+		),
 	],
 	public: [
 		new CommandConfig(
 			['ROLES'],
-			RolesCommand
+			RolesCommand,
 		),
 		new CommandConfig(
 			['GETROLE'],
-			GetRoleCommand
+			GetRoleCommand,
 		),
 		new CommandConfig(
 			['REMOVEROLE'],
-			RemoveRoleCommand
+			RemoveRoleCommand,
 		),
 		new CommandConfig(
 			['HELP'],
-			PublicHelpCommand
-		)
-	]
-}
+			PublicHelpCommand,
+		),
+	],
+};
 
-export function getCommandConfig(type: 'dev' | 'admin' | 'public', args: Array<string>): CommandConfig {
-	let CommandConfig = COMMANDCONFIGS[type].find(c => c.key.includes(args[0])) || false;
+export function getCommandConfig(type: 'dev' | 'admin' | 'public', args: string[]): CommandConfig {
+	let commandConfig = COMMANDCONFIGS[type].find((c: CommandConfig) => c.key.includes(args[0])) || false;
 
 	args.splice(0, 1);
 
-	if (!CommandConfig) {
+	if (!commandConfig) {
 		return;
 	}
 
 	let final = false;
-	while (CommandConfig.subCommands && !final) {
-		let newTrigger = CommandConfig.getSubCommand(args[0]);
+	while (commandConfig.subCommands && !final) {
+		const newTrigger = commandConfig.getSubCommand(args[0]);
 		if (newTrigger) {
-			CommandConfig = newTrigger as CommandConfig;
+			commandConfig = newTrigger as CommandConfig;
 			args.splice(0, 1);
 		} else {
 			final = true;
 		}
 	}
 
-	return CommandConfig;
+	return commandConfig;
 }

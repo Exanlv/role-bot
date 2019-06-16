@@ -1,11 +1,12 @@
-import { BaseCommandInterface, BaseCommand } from "@classes/base-command";
-import { firstLetterUppercase } from "@core/functions";
+import { BaseCommand, IBaseCommand } from '@classes/base-command';
+import { firstLetterUppercase } from '@core/functions';
+import { Role } from 'discord.js';
 
-export class AddRoleCommand extends BaseCommand implements BaseCommandInterface {
+export class AddRoleCommand extends BaseCommand implements IBaseCommand {
 	public static description: string = 'Adds a self-assignable role';
 
-	public async runCommand() {
-        this.loadInput();
+	public async runCommand(): Promise<void> {
+		this.loadInput();
 
 		const roleName = this.input.ROLE || this.input.R || await this.getUserInput('``> enter role name``');
 
@@ -14,7 +15,7 @@ export class AddRoleCommand extends BaseCommand implements BaseCommandInterface 
 			return;
 		}
 
-		const role = this.message.guild.roles.find(r => r.name.toUpperCase() === roleName);
+		const role = this.message.guild.roles.find((r: Role) => r.name.toUpperCase() === roleName);
 
 		if (!role) {
 			this.sendMessage(`Could not add self-assignable role; role \`\`${firstLetterUppercase(roleName)}\`\` does not exist`);
@@ -40,5 +41,5 @@ export class AddRoleCommand extends BaseCommand implements BaseCommandInterface 
 
 		this.serverConfig.selfAssign.addRole(categoryName, role.id);
 		this.sendMessage(`Added role \`\`${role.name}\`\` as self-assignable role in category \`\`${firstLetterUppercase(categoryName)}\`\``);
-    }
+	}
 }

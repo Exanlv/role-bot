@@ -1,18 +1,20 @@
-import { BaseCommandInterface, BaseCommand } from "@classes/base-command";
-import { firstLetterUppercase } from "@core/functions";
-import { ListValue } from "@classes/list-value";
-import { List } from "@classes/list";
+import { BaseCommand, IBaseCommand } from '@classes/base-command';
+import { List } from '@classes/list';
+import { ListValue } from '@classes/list-value';
+import { RoleConfig } from '@classes/role-config';
+import { firstLetterUppercase } from '@core/functions';
+import { Role } from 'discord.js';
 
-export class ListRoleCommand extends BaseCommand implements BaseCommandInterface {
+export class ListRoleCommand extends BaseCommand implements IBaseCommand {
 	public static description: string = 'Lists the current self-assignable roles';
 
-	public runCommand() {
+	public runCommand(): void {
 		const categoryName = this.args.join(' ');
-		const list = new List;
+		const list = new List();
 
 		if (!categoryName) {
 			const categories = this.serverConfig.selfAssign.getCategories();
-			categories.forEach(category => {
+			categories.forEach((category: string) => {
 				list.values.push(this.getCategoryList(category));
 			});
 		} else {
@@ -20,8 +22,7 @@ export class ListRoleCommand extends BaseCommand implements BaseCommandInterface
 				this.sendMessage(`Category \`\`${categoryName}\`\` does not exist`);
 				return;
 			}
-	
-	
+
 			list.values.push(this.getCategoryList(categoryName));
 		}
 
@@ -29,17 +30,16 @@ export class ListRoleCommand extends BaseCommand implements BaseCommandInterface
 			this.sendMessage('No roles/category are currently set up');
 			return;
 		}
-		
 
 		this.sendList(list);
-    }
+	}
 
-    private getCategoryList(categoryName) {
+	private getCategoryList(categoryName: string): ListValue {
 		const category = this.serverConfig.selfAssign.getCategory(categoryName);
-		const listValue = new ListValue;
-		
-		category.roles.forEach(role => {
-			let guildRole = this.message.guild.roles.find(r => r.id === role.id);
+		const listValue = new ListValue();
+
+		category.roles.forEach((role: RoleConfig) => {
+			const guildRole = this.message.guild.roles.find((r: Role) => r.id === role.id);
 
 			if (!guildRole) {
 				this.serverConfig.selfAssign.handleRemovedRole(role.id);

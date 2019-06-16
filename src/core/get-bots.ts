@@ -1,11 +1,11 @@
-import { RoleBot } from '@core/bot-roles'
-import { TestingBot } from '@core/bot-testing'
+import { RoleBot } from '@core/bot-roles';
+import { TestingBot } from '@core/bot-testing';
+import { getBaseDir, loadDirs, loadFiles } from '@core/core-functions';
 import { mainBotDirs, mainBotFiles } from '@core/defaults/main';
-import { loadDirs, loadFiles, getBaseDir } from '@core/core-functions';
-import { readFileSync } from 'fs';
 import { testingBotDirs, testingBotFiles } from '@core/defaults/testing';
+import { readFileSync } from 'fs';
 
-export function getRolebot(doFileChecks = true): RoleBot {
+export function getRolebot(doFileChecks: boolean = true): RoleBot {
 	if (doFileChecks) {
 		loadDirs(mainBotDirs);
 		loadFiles(mainBotFiles);
@@ -19,13 +19,13 @@ export function getRolebot(doFileChecks = true): RoleBot {
 		developers: readFileSync(baseDir + '/settings/developers.txt').toString().split(','),
 		prefixes: {
 			admin: readFileSync(baseDir + '/settings/prefix-admin.txt').toString(),
-			dev: readFileSync(baseDir + '/settings/prefix-dev.txt').toString()
+			dev: readFileSync(baseDir + '/settings/prefix-dev.txt').toString(),
 		},
-		devServerId: readFileSync(baseDir + '/settings/server-dev.txt').toString()
+		devServerId: readFileSync(baseDir + '/settings/server-dev.txt').toString(),
 	});
 }
 
-export function getTestingBot(doFileChecks = true): TestingBot {
+export function getTestingBot(doFileChecks: boolean = true): TestingBot {
 	if (doFileChecks) {
 		loadDirs(mainBotDirs);
 		loadFiles(mainBotFiles);
