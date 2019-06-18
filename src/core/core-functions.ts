@@ -1,6 +1,7 @@
 import { FileConfig } from '@classes/file';
 import { FolderConfig } from '@classes/folder';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import { getFileValue } from './functions';
 
 export function getBaseDir(): string {
 	const dir = __dirname.replace(/\\/g, '/').split('/');
@@ -29,7 +30,7 @@ export function loadFiles(files: FileConfig[]): void {
 				missingFiles.push(files[i]);
 			}
 		} else {
-			if (files[i].required && readFileSync(baseDir + files[i].path).toString() === '') {
+			if (files[i].required && getFileValue(baseDir + files[i].path).toString() === '') {
 				missingFiles.push(files[i]);
 			}
 		}

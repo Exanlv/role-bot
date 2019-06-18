@@ -4,6 +4,7 @@ import { getBaseDir, loadDirs, loadFiles } from '@core/core-functions';
 import { mainBotDirs, mainBotFiles } from '@core/defaults/main';
 import { testingBotDirs, testingBotFiles } from '@core/defaults/testing';
 import { readFileSync } from 'fs';
+import { getFileValue } from './functions';
 
 export function getRolebot(doFileChecks: boolean = true): RoleBot {
 	if (doFileChecks) {
@@ -13,15 +14,15 @@ export function getRolebot(doFileChecks: boolean = true): RoleBot {
 
 	const baseDir = getBaseDir();
 
-	return new RoleBot(readFileSync(baseDir + '/settings/tokens/main.txt').toString(), baseDir, {
-		accentColor: readFileSync(baseDir + '/settings/accent-color.txt').toString(),
-		dev: Boolean(readFileSync(baseDir + '/settings/dev.txt').toString()),
-		developers: readFileSync(baseDir + '/settings/developers.txt').toString().split(','),
+	return new RoleBot(getFileValue(baseDir + '/settings/tokens/main.txt'), baseDir, {
+		accentColor: getFileValue(baseDir + '/settings/accent-color.txt'),
+		dev: Boolean(getFileValue(baseDir + '/settings/dev.txt')),
+		developers: getFileValue(baseDir + '/settings/developers.txt').split(','),
 		prefixes: {
-			admin: readFileSync(baseDir + '/settings/prefix-admin.txt').toString(),
-			dev: readFileSync(baseDir + '/settings/prefix-dev.txt').toString(),
+			admin: getFileValue(baseDir + '/settings/prefix-admin.txt'),
+			dev: getFileValue(baseDir + '/settings/prefix-dev.txt'),
 		},
-		devServerId: readFileSync(baseDir + '/settings/server-dev.txt').toString(),
+		devServerId: getFileValue(baseDir + '/settings/server-dev.txt'),
 	});
 }
 
@@ -36,5 +37,5 @@ export function getTestingBot(doFileChecks: boolean = true): TestingBot {
 
 	const baseDir = getBaseDir();
 
-	return new TestingBot(readFileSync(baseDir + '/settings/tokens/testing.txt').toString(), baseDir);
+	return new TestingBot(getFileValue(baseDir + '/settings/tokens/testing.txt'), baseDir);
 }
