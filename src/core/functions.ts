@@ -14,5 +14,5 @@ export function limitLength(input: string, limit: number = 75): string {
 
 export function getFileValue(filePath): string {
 	const val = readFileSync(filePath).toString();
-	return val.endsWith('\n') ? val.substr(0, val.length - 2,) : val;
+	return val.endsWith('\n') ? val.substr(0, val.length - 1) : val;
 }
