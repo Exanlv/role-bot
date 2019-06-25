@@ -28,8 +28,13 @@ export const mainBotFiles: FileConfig[] = [
 		required: true,
 	},
 	{
-		path: '/settings/accent-color.txt',
+		path: '/settings/prefix-dev.txt',
 		defaultValue: '$D ',
+		required: true,
+	},
+	{
+		path: '/settings/accent-color.txt',
+		defaultValue: 'b30000',
 		required: true,
 	},
 	{
