@@ -2,7 +2,7 @@ import { BaseCommand, IBaseCommand } from '@classes/base-command';
 import { firstLetterUppercase } from '@core/functions';
 import { DiscordAPIError, GuildMember, Role } from 'discord.js';
 
-export class RemoveRoleCommand extends BaseCommand implements IBaseCommand {
+export class DestroyRoleCommand extends BaseCommand implements IBaseCommand {
 	public static description: string = 'Remove a role';
 
 	public runCommand(): void {

@@ -34,7 +34,7 @@ export const mainBotFiles: FileConfig[] = [
 	},
 	{
 		path: '/settings/accent-color.txt',
-		defaultValue: 'b30000',
+		defaultValue: '#008CFF',
 		required: true,
 	},
 	{

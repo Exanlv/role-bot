@@ -1,8 +1,8 @@
 import { GlobalConfig } from '@classes/global-config';
 import { List } from '@classes/list';
+import { ListValue } from '@classes/list-value';
 import { ServerConfig } from '@classes/server-config';
 import { Client, DiscordAPIError, GuildChannel, Message, RichEmbed, TextChannel } from 'discord.js';
-import { ListValue } from '@classes/list-value';
 
 export class BaseCommand {
 	public serverConfig: ServerConfig;

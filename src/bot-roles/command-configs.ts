@@ -27,6 +27,7 @@ import { GetRoleCommand } from '@bot-roles/commands/public/roles/get-role';
 import { RolesCommand } from '@bot-roles/commands/public/roles/roles';
 import { CommandConfig } from '@classes/command-config';
 import { CommandConfigs } from '@classes/commands-config';
+import { DestroyRoleCommand } from './commands/public/roles/destroy-role';
 
 export const COMMANDCONFIGS: CommandConfigs = {
 	dev: [
@@ -184,7 +185,7 @@ export const COMMANDCONFIGS: CommandConfigs = {
 		),
 		new CommandConfig(
 			['REMOVEROLE'],
-			RemoveRoleCommand,
+			DestroyRoleCommand,
 		),
 		new CommandConfig(
 			['HELP'],

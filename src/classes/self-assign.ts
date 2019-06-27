@@ -1,10 +1,10 @@
 import { MessageReactionsConfig } from '@classes/message-reactions-config';
+import { ReactionConf } from '@classes/reaction-conf';
 import { RoleCategory } from '@classes/role-category';
 import { RoleConfig } from '@classes/role-config';
 import { RoleReact } from '@classes/role-react';
 import { Role } from 'discord.js';
 import { EventEmitter } from 'events';
-import { ReactionConf } from '@classes/reaction-conf';
 
 export class SelfAssign extends EventEmitter {
 	private roles: RoleCategory[] = [];

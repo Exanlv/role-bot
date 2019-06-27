@@ -1,4 +1,4 @@
-import { readFileSync } from "fs";
+import { readFileSync } from 'fs';
 
 export function sleep(ms: number): Promise<void> {
 	return new Promise((resolve: any): any => setTimeout(resolve, ms) );
@@ -12,7 +12,7 @@ export function limitLength(input: string, limit: number = 75): string {
 	return input.length > limit ? input.substr(0, limit) + '...' : input;
 }
 
-export function getFileValue(filePath): string {
+export function getFileValue(filePath: string): string {
 	const val = readFileSync(filePath).toString();
 	return val.endsWith('\n') ? val.substr(0, val.length - 1) : val;
 }

@@ -5,7 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "start": "ts-node ./src/bot-roles/index.ts",
-    "test": "ts-node ./src/bot-testing/index.ts",
+    "test": "tslint -c ./tslint.json 'src/**/*.ts' --fix && ts-node ./src/bot-testing/index.ts",
     "lint": "tslint -c ./tslint.json 'src/**/*.ts' --fix"
   },
   "author": "Exan",
