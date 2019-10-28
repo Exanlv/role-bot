@@ -6,7 +6,9 @@
   "scripts": {
     "start": "ts-node ./src/bot-roles/index.ts",
     "test": "tslint -c ./tslint.json 'src/**/*.ts' --fix && ts-node ./src/bot-testing/index.ts",
-    "lint": "tslint -c ./tslint.json 'src/**/*.ts' --fix"
+    "lint": "tslint -c ./tslint.json 'src/**/*.ts' --fix",
+    "compile": "git clean -df && tsc",
+    "forever": "forever start ./src/bot-roles/index.js"
   },
   "author": "Exan",
   "license": "ISC",
