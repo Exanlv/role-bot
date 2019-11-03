@@ -7,6 +7,7 @@ import { ServerConfig } from '@classes/server-config';
 import { ShortReact } from '@classes/short-react';
 import { Client, DiscordAPIError, Guild, GuildChannel, GuildMember, Message, MessageReaction, RichEmbed, Role, TextChannel, User } from 'discord.js';
 import { EventEmitter } from 'events';
+import { getRandomColor } from './helper';
 
 export class RoleBot extends EventEmitter {
 	public client: Client;
@@ -335,7 +336,7 @@ export class RoleBot extends EventEmitter {
 				}
 
 				const embed = new RichEmbed()
-					.setColor(this.globalConfig.accentColor)
+					.setColor(this.globalConfig.accentColor === 'RANDOM' ? getRandomColor() : this.globalConfig.accentColor)
 					.setAuthor(message.author.tag, message.author.avatarURL, message.url)
 					.addField(`#${(message.channel as TextChannel).name}`, message.cleanContent, true)
 					.addBlankField(true)

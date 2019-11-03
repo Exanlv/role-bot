@@ -2,6 +2,7 @@ import { GlobalConfig } from '@classes/global-config';
 import { List } from '@classes/list';
 import { ListValue } from '@classes/list-value';
 import { ServerConfig } from '@classes/server-config';
+import { getRandomColor } from '@core/helper';
 import { Client, DiscordAPIError, GuildChannel, Message, RichEmbed, TextChannel } from 'discord.js';
 
 export class BaseCommand {
@@ -24,7 +25,7 @@ export class BaseCommand {
 
 	public sendList(list: List, includeEmpty: boolean = true): void {
 		const embed = new RichEmbed()
-			.setColor(list.color || this.globalConfig.accentColor)
+			.setColor(list.color || (this.globalConfig.accentColor === 'RANDOM' ? getRandomColor() : this.globalConfig.accentColor))
 		;
 
 		if (list.title) {
