@@ -188,7 +188,7 @@ export class RoleBot extends EventEmitter {
 
 			shortReact.guild = this.client.guilds.find((g: Guild) => g.id === event.d.guild_id);
 			shortReact.member = shortReact.guild.members.find((m: GuildMember) => m.id === event.d.user_id);
-			shortReact.channelId = event.d.message_id;
+			shortReact.messageId = event.d.message_id;
 			shortReact.emoteIdentifier = event.d.emoji.id ? `${event.d.emoji.name.split('~')[0]}:${event.d.emoji.id}` : event.d.emoji.name;
 
 			this.client.emit(events[event.t], shortReact);
