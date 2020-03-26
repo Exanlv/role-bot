@@ -36,7 +36,7 @@ export class RoleBot extends EventEmitter {
 
 		this.login().then(() => {
 			this.handleOnGuildCreate();
-			this.handleOnGuildDelete();
+			// this.handleOnGuildDelete();
 			this.loadConfigs();
 			this.handleOnMessage();
 			this.handleOnRawMessageReacts();
