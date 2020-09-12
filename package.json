@@ -16,7 +16,7 @@
     "discord.js": "^11.4.2",
     "fs": "0.0.1-security",
     "module-alias": "^2.2.0",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "ts-node": "^8.3.0",
     "tslint": "^5.17.0",
     "typescript": "^3.4.5"
