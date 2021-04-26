@@ -1,3 +1,6 @@
+# Deprecated
+This bot is no longer supported, consider checkout out https://github.com/Exanlv/Exan instead
+
 # role-bot
 Bot to handle roles on discord
 
